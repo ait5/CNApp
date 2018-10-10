@@ -1,0 +1,82 @@
+<html>
+
+
+
+<p>CNApp applies a <b>re-segmentation</b> approach aiming at correcting potential background noise and amplitude divergence due to technical variability. Parameters for re-segmentation are:
+
+<ul>
+<li>Minimum segment length [100000 bp]:<br>minimum length of a copy-number segment to be included in the analysis. Segments below this value will be automatically discarded</li>
+<li>Maximum distance between segments [1000000 bp]:<br>maximum distance allowed between segments to be merged. Segments above this value will not be merged even accomplishing the remaining required parameters</li>
+<li>Maximum amplitude (<i>seg.mean</i>) deviation between segments [0.16]:<br>maximum difference allowed in seg.mean values between adjacent segments</li>
+<li>Minimum amplitude (<i>seg.mean</i>) deviation from segment to zero [0.16]:<br>segments must have <i>seg.mean</i> values higher than 0.16 or lower than -0.16 to be considered for re-segmentation, otherwise, they will be re-segmented to 0 baseline.</li>
+<li>Maximum BAF deviation between segments [0.1]:<br>maximum deviation allowed in BAF values between adjacent segments</li>
+</ul>
+
+Users can customize these parameters (<i>Advanced</i> option) or use the default ones.
+<br>
+<br>
+Re-segmentation step can be skipped, in wich case CNA scores will be computed considering segments from the input file.</p>
+
+<br>
+<br>
+<br>
+
+<p><b>CNA Scores</b> (i.e. Broad, Focal and Global [<i>BCS</i>, <i>FCS</i> and <i>GCS</i>, respectively]) are computed through copy number events <u>classification and weigth</u>, according to customizable CNA level thresholds (see our manuscript <a href="#"><u><i>Franch-Expósito et al., 2018</i></u></a> for mor details).
+<br>
+<br>
+Default thresholds for CNA calling are:
+</p>
+
+
+<table style="width:100%">
+  <tr>
+    <th>CNA level</th>
+    <th>log2ratio values</th>
+    <th>Number of copies</th>
+  </tr>
+  <tr>
+    <td>High-level gain</td>
+    <td>1</td>
+    <td>>= 4</td>
+  </tr>
+  <tr>
+    <td>Medium-level gain</td>
+    <td>0.58</td>
+    <td>[3 - 4)</td>
+  </tr>
+  <tr>
+    <td>Low-level gain</td>
+    <td>0.2</td>
+    <td>[2.3 - 3]</td>
+  </tr>
+  <tr>
+    <td>Low-level loss</td>
+    <td>-0.2</td>
+    <td>(1 - 1.7]</td>
+  </tr>
+  <tr>
+    <td>Medium-level loss</td>
+    <td>-1</td>
+    <td>(0.6 - 1]</td>
+  </tr>
+  <tr>
+    <td>High-level loss</td>
+    <td>-1.74</td>
+    <td><= 0.6</td>
+  </tr>
+</table>
+
+<br>
+<br>
+<br>
+
+<p><u>CNAs classification</u> is performed by applying whole-chromosome and chromosome arm coverage cutoffs. Default cutoffs are as follows and can be changed by the user:</p>
+
+<ul>
+<li>Minimal coverage for chromosomal CNAs [0.9]:<br>considering the relative length of a segment to the whole-chromosome, the segment will be tagged as chromosomal if covers more than 90% of the chromosome</li>
+<li>Minimal coverage for arm-level events [0.5]:<br>considering the relative length of a segment to a chromosome-arm, the segment will be tagged as arm-level if covers  more than 50% of the arm</li>
+</ul>
+
+
+ 
+</html>

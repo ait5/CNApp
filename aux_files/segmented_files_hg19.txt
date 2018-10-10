@@ -1,0 +1,10 @@
+file	name	Description
+autosomes_hg19_by_arms.txt	Arms	Chromosomic arm bands
+autosomes_hg19_by_half_arms.txt	Half arms	Human genome 19 by half arms
+autosomes_hg19_by_cytobands.txt	Cytobands	Human genome 19 by major cytobands
+autosomes_hg19_by_sub-cytobands.txt	Sub-cytobands	Human genome 19 by sub-cytobands
+autosomes_hg19_by_40Mb.txt	40Mb	Human genome 19 by 40Mb
+autosomes_hg19_by_20Mb.txt	20Mb	Human genome 19 by 20Mb
+autosomes_hg19_by_10Mb.txt	10Mb	Human genome 19 by 10Mb
+autosomes_hg19_by_5Mb.txt	5Mb	Human genome 19 by 5Mb
+autosomes_hg19_by_1Mb.txt	1Mb	Human genome 19 by 1Mb

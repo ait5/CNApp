@@ -1,0 +1,226 @@
+<html>
+
+
+<p>
+<b>CNApp</b> shiny web-tool works with <u>copy number segmented data</u> from multiple platforms such as SNP arrays, aCGH and next generation sequencing, including whole-exome, whole-genome and targeted sequencing.
+<br></br>
+Minimum input file must be <u>five columns</u> matrix with ' <i>ID</i> ', ' <i>chr</i> ', ' <i>loc.start</i> ', ' <i>loc.end</i> ' and ' <i>seg.mean</i> ' column headers.
+<br></br>
+<u>Extra columns</u> will be read as <u>annotation variables</u> and can be used to order samples and, more importantly, to perform integrative analysis and association studies with copy number alterations and CNA Scores computed by CNApp.
+<br></br>
+Genome builds <b><i>hg19</i></b> and <b><i>hg38</i></b> are accepted and must be specified.
+<br></br>
+Decimal character ('.' or ',') and column field ('tab' or ',') must be specified.
+<br></br>
+Minimum input file example:
+
+<table style="width:100%">
+  <tr>
+    <th>ID</th>
+    <th>chr</th>
+    <th>loc.start</th>
+    <th>loc.end</th>
+    <th>seg.mean</th>
+    <th>purity *</th>
+    <th>BAF *</th>
+    <th></th>
+    <th>annotation <i>n</i></th>
+
+  </tr>
+  <tr>
+    <td>S_1</td>
+    <td>4</td>
+    <td>1053934</td>
+    <td>188763651</td>
+    <td>-0.422</td>
+    <td>0.59</td>
+    <td>0.5</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_1</td>
+    <td>7</td>
+    <td>705284</td>
+    <td>158385118</td>
+    <td>0.206</td>
+    <td>0.59</td>
+    <td>0.47</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_1</td>
+    <td>8</td>
+    <td>617667</td>
+    <td>37084658</td>
+    <td>-0.456</td>
+    <td>0.59</td>
+    <td>0.61</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_1</td>
+    <td>9</td>
+    <td>37133141</td>
+    <td>37275016</td>
+    <td>0.704</td>
+    <td>0.59</td>
+    <td>0.59</td>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_1</td>
+    <td>4</td>
+    <td>1053934</td>
+    <td>188763651</td>
+    <td>-0.422</td>
+    <td>0.59</td>
+    <td>0.5</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_2</td>
+    <td>2</td>
+    <td>101813457</td>
+    <td>103550390</td>
+    <td>0.348</td>
+    <td>0.67</td>
+    <td>0.59</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_2</td>
+    <td>3</td>
+    <td>57336423</td>
+    <td>59079367</td>
+    <td>0.362</td>
+    <td>0.67</td>
+    <td>0.42</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_2</td>
+    <td>5</td>
+    <td>78442919</td>
+    <td>79380062</td>
+    <td>0.365</td>
+    <td>0.67</td>
+    <td>0.39</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_2</td>
+    <td>11</td>
+    <td>68377602</td>
+    <td>69854718</td>
+    <td>2.461</td>
+    <td>0.67</td>
+    <td>0.48</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_3</td>
+    <td>1</td>
+    <td>149879545</td>
+    <td>247807327</td>
+    <td>0.354</td>
+    <td>0.82</td>
+    <td>0.45</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_3</td>
+    <td>5</td>
+    <td>914233</td>
+    <td>180360469</td>
+    <td>0.351</td>
+    <td>0.82</td>
+    <td>0.46</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_3</td>
+    <td>8</td>
+    <td>617667</td>
+    <td>42933372</td>
+    <td>-0.792</td>
+    <td>0.82</td>
+    <td>0.38</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_3</td>
+    <td>14</td>
+    <td>47460945</td>
+    <td>53302102</td>
+    <td>1.542</td>
+    <td>0.82</td>
+    <td>0.55</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+<tr>
+    <td>S_4</td>
+    <td>1</td>
+    <td>120523955</td>
+    <td>247813706</td>
+    <td>0.225</td>
+    <td>0.65</td>
+    <td>0.64</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_4</td>
+    <td>7</td>
+    <td>1917716</td>
+    <td>14329227</td>
+    <td>1.074</td>
+    <td>0.65</td>
+    <td>0.51</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_4</td>
+    <td>18</td>
+    <td>15239655</td>
+    <td>17954421</td>
+    <td>1.606</td>
+    <td>0.65</td>
+    <td>0.49</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+  <tr>
+    <td>S_4</td>
+    <td>22</td>
+    <td>17955255</td>
+    <td>19780842</td>
+    <td>1.071</td>
+    <td>0.65</td>
+    <td>0.58</td>
+    <th></th>
+    <td>----</td>
+  </tr>
+</table>
+
+<font size="1">(*) If available, it is recommended to include sample purity (purity) and allelic fraction (BAF) values, which can improve the accuracy of CNA calls and provide information of copy-number neutral loss-of-heterozigosity (CN-LOH).</font>
+<br></br>
+<u><b>IMPORTANT</b>: file HEADER is mandatory</u>. MUST contain ' <i>ID</i> ', ' <i>chr</i> ', ' <i>loc.start</i> ', ' <i>loc.end</i> ' and ' <i>seg.mean</i> ' (and, optionally, '<i>purity</i>' and/or '<i>BAF</i>') terms in order to interpret genomic regions and extra user variables.
+<br></br>
+Use our <i><b>Demo data</b></i> to play with the app.<br>
+<i><b>Demo data</b></i>: genomic ranges describing somatic copy number alterations (SCNAs) from 160 TCGA-COAD samples.
+</p>
+ 
+</html>

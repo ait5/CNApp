@@ -1,0 +1,72 @@
+/* Body_sidebar */
+	#dashboard_sidebar {
+		min-width: 200px;
+		padding: 0 0 0 0;
+		width: 200px;
+
+	}
+
+	#body_sidebar {
+		min-width: 200px;
+		padding: 0 0 0 0;
+		width: 200px;
+		margin-top: 0;
+		margin-bottom: 300px;
+		margin-left: 10px;
+		background-color:  #335162;
+		position:fixed;
+		overflow:visible,
+	}
+
+
+/* Footer */
+	#footer {
+		min-width: 0;
+		padding: 580px 10px 10px 10px;
+		width: 200px;
+		margin-top: 10px;
+		margin-left: 10px;
+  		text-align: center;
+	}
+	#footer .icons {
+
+	}
+
+	#footer .copyright {
+		color: #aaaaaa;
+		font-family: "Raleway", Helvetica, sans-serif;
+		font-size: 0.5em;
+		font-weight: 400;
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		text-align: left;
+		margin-left: 10px;
+	}
+
+/* Columns */
+	#column_a {
+	    float: left;
+	    width: 65%;
+	}
+
+	#column_b {
+		float:left;
+		width: 35%;
+	}
+
+	/* Clear floats after the columns */
+	#row:after {
+	    content: "";
+	    display: table;
+	    clear: both;
+	}
+
+
+
+
+
+
+
+
+
+
