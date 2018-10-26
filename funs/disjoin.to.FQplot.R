@@ -1,5 +1,5 @@
 
-disjoin.to.FQplot <- function (list_segs) {
+disjoin.to.FQplot <- function (list_segs, gain, loss) {
 
   filt_list <- list_segs
 
@@ -27,9 +27,9 @@ disjoin.to.FQplot <- function (list_segs) {
         events <- as.vector(do.call( cbind,lapply(iters, function(x){
           seg.mean <- as.numeric(as.character(mat[x,5]))
           ans <- "normal"
-          if (seg.mean>=0.2) {
+          if (seg.mean>=gain) {
             ans <- "gain"
-          }else if (seg.mean<=-0.2) {
+          }else if (seg.mean<=loss) {
             ans <- "loss"
           }
         })))
