@@ -2036,7 +2036,7 @@ function(input, output, session) {
           source(source_fun)
           # sourcing fun into R
 
-          fq_df2 <- disjoin.to.FQplot(list_segs)
+          fq_df2 <- disjoin.to.FQplot(list_segs, gain=low.cutoff.up, loss=low.cutoff.dw)
           rownames(fq_df2) <- paste(fq_df2$chr, ":", fq_df2$start, "-", fq_df2$end, sep="")},
 
           min = 1,
