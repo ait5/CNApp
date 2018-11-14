@@ -164,6 +164,7 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                            ),
                            
                            textOutput('error_reading_data'),
+			   uiOutput('error_too_many_samples'),
                            textOutput('error_reading_annot_data'),
                            
                            tags$head(tags$style("#error_reading_data{color: red;
