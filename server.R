@@ -196,6 +196,8 @@ function(input, output, session) {
           length(grep("loc.end", colnames(df)))>0 # correct header: we need 'ID', 'chr', 'loc.start', 'loc.end' 
         condition3 <- class(df[,"seg.mean"])=="numeric" # decimal character correct ('logration' column is numeric)
         condition4 <- dim(df[-c(1:5),])[2] <= 26
+        ########## UNCOMMENT FOR SERVER VERSION !!!!!!!
+        #condition5 <- length(as.character(unique(df[,"ID"]))) <= 160 
       }
       
       if (condition1=="FALSE"){
@@ -218,7 +220,19 @@ function(input, output, session) {
           paste("Too much variable columns. Please, reduce them to 26 variable columns top",sep="")
         )
         output$user_parameters <- renderUI({})
-      }  else if (condition1=="TRUE" & condition2=="TRUE" & condition3=="TRUE" & condition4=="TRUE"){
+      }  
+      ########## UNCOMMENT FOR SERVER VERSION !!!!!!!
+      # else if (condition2=="TRUE" & condition5=="FALSE"){  
+      #   output$error_reading_data <- renderText(
+      #    ""
+      #   )
+      #   output$error_too_many_samples <- renderUI(
+      #     HTML("<div style='color:red'>Too much samples for online version of CNApp.<br> Please, reduce number of samples to 160 or download local version at <a href='https://github.com/ait5/CNApp' target='_blank'><b><i>https://github.com/ait5/CNApp</i></b></a>")
+      #   )
+      #   output$user_parameters <- renderUI({})
+      # }  
+      # else if (condition1=="TRUE" & condition2=="TRUE" & condition3=="TRUE" & condition4=="TRUE" & condition5=="TRUE"){
+      else if (condition1=="TRUE" & condition2=="TRUE" & condition3=="TRUE" & condition4=="TRUE" ){
         output$error_reading_data <- renderText(
           ""
         )
