@@ -71,7 +71,7 @@ function(input, output, session) {
   aux_files_dir <- "aux_files"
   # directory for functions in app
   
-  demo_data_file <- "demo_data_MSI_&_MSS_COAD_BAF.txt"
+  demo_data_file <- "demo_data_random160COAD_cms_14.11.2018.txt"
   # directory for functions in app
   
   ## App fixed terms ##
