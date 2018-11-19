@@ -3242,8 +3242,8 @@ function(input, output, session) {
         
         mat_vars <- mat_variables
         track_vars <- var_tracks
-        gain.cutoff <- gain_th
-        loss.cutoff <- loss_th
+        gain.cutoff <- re_gain_th
+        loss.cutoff <- re_loss_th
         
         # Preparing p_annotation (Annotation tracks):
         fun_name <- "Ht.Annotation.RegionProfile" # function name
