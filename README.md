@@ -4,6 +4,8 @@ CNApp provides a unique scenario to comprehensively analyze CNAs and integrate t
 
 Functions of CNApp comprise three main sections: 1- Re-Seg & Score: re-segmentation, CNA scores computation, variable association and survival analysis, 2- Region profile: genome-wide CNA profiling, descriptive regions assessment and 3- Classifier model: machine learning classification model predictions.
 
+CNApp is hosted at http://bioinfo.ciberehd.org/CNApp. 
+
 Please give us credit and cite CNApp when you use it for your integrative CNA analysis:
 
 CNApp: a web-based tool for integrative analysis of genomic copy number alterations in cancer
