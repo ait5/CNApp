@@ -1,8 +1,8 @@
 # CNApp ##
-CNApp is a user-friendly web tool that offers sample- and cohort-level association analyses, allowing a comprehensive and integrative exploration of CNAs with clinical and molecular variables. CNApp generates genome-wide profiles, calculates CNA levels by computing broad, focal and global CNA scores, and uses machine learning-based predictions to classify samples by using segmented data from either microarrays or next-generation sequencing.
+CNApp is a user-friendly web tool that offers sample- and cohort-level association analyses, allowing a comprehensive and integrative exploration of CNAs with clinical and molecular variables. CNApp generates genome-wide profiles with tumor-purity correctiion, calculates CNA levels by computing broad, focal and global CNA scores (BCS, FCS and GCS, respectively), identifies CNAs associated with clinical features and molecular annotated variables and uses machine learning-based predictions to classify samples by using segmented data from either microarrays or next-generation sequencing.
 CNApp provides a unique scenario to comprehensively analyze CNAs and integrate them with molecular and clinical features.
 
-Functions of CNApp comprise three main sections: 1- Re-Seg & Score: re-segmentation, CNA scores computation and variable association, 2- Region profile: genome-wide CNA profiling, and 3- Classifier model: machine learning classification model predictions.
+Functions of CNApp comprise three main sections: 1- Re-Seg & Score: re-segmentation, CNA scores computation, variable association and survival analysis, 2- Region profile: genome-wide CNA profiling, descriptive regions assessment and 3- Classifier model: machine learning classification model predictions.
 
 Please give us credit and cite CNApp when you use it for your integrative CNA analysis:
 
@@ -25,6 +25,11 @@ if(!require(shinyWidgets)) install.packages("shinyWidgets")
 if(!require(shinydashboard)) install.packages("shinydashboard")
 
 if(!require(V8)) install.packages("V8")
+#if any issue here like 'ERROR: configuration failed for package ‘curl’' or 'ERROR: configuration failed for package ‘V8’' follow printed instructions on your command-line window
+
+if(!require(httr)) install.packages("httr")
+#if any issue here like 'ERROR: configuration failed for package ‘openssl’' follow printed instructions on your command-line window
+
 if(!require(plotly)) install.packages("plotly")
 if(!require(randomcoloR)) install.packages("randomcoloR")
 if(!require(heatmaply)) install.packages("heatmaply")
@@ -36,17 +41,27 @@ if(!require(doBy)) install.packages("doBy")
 if(!require(parallel)) install.packages("parallel")
 if(!require(caret)) install.packages("caret")
 if(!require(XML)) install.packages("XML")
+#if any issue here like 'ERROR: configuration failed for package ‘XML’' ty installing 'libxml2' into your OS
 
 if (!require(devtools)) install.packages("devtools")
 
 if(!require(limma)) {source("http://www.bioconductor.org/biocLite.R");biocLite("limma")}
-
 if(!require(GenomicFeatures)) {source("http://www.bioconductor.org/biocLite.R");biocLite("GenomicFeatures")}
+#if any issue here like 'ERROR: configuration failed for package ‘RMySQL’' ty installing 'libmysqlclient' into your OS
 if(!require(GenomicAlignments)) {source("http://www.bioconductor.org/biocLite.R");biocLite("GenomicAlignments")}
 if(!require(GenVisR)) {source("http://www.bioconductor.org/biocLite.R");biocLite("GenVisR")}
 
+    ############## to use BiocManager ####################
+    #if (!requireNamespace("BiocManager", quietly = TRUE))
+    #    install.packages("BiocManager")
+    #BiocManager::install("limma")
+    #BiocManager::install("GenomicFeatures")
+    #BiocManager::install("GenomicAlignments")
+    #BiocManager::install("GenVisR")
+    ######################################################
+
 if(!require(shinysky)) {library(devtools); devtools::install_github("AnalytixWare/ShinySky")}
-if(!require(GenVisR)) {library(devtools); devtools::install_github("griffithlab/GenVisR")}
+#if(!require(GenVisR)) {library(devtools); devtools::install_github("griffithlab/GenVisR")}
 
 if (!require(webshot)) install.packages("webshot")
 
