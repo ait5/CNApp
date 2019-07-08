@@ -140,22 +140,45 @@ freq.barplot.GainLoss <- function(data, colors, segmented_file, bar_gap=NULL){
 
 
 
-  p <- plot_ly(mt, x=x, y=mt[,1],
-    name=colnames(mt)[1],type = "bar",
-    marker=list(color=colors[1]),
-    showlegend=F,
-    text=text[,1],
-    hoverinfo='text'
-  )
+  # p <- plot_ly(mt, x=x, y=mt[,1],
+  #   name=colnames(mt)[1],type = "bar",
+  #   marker=list(color=colors[1]),
+  #   showlegend=F,
+  #   text=text[,1],
+  #   hoverinfo='text'
+  # )
 
-  for (i in 2:ncol(mt)){
-    p <- p %>% add_trace(y=mt[,i],
-      name=colnames(mt)[i],
-      marker=list(color=colors[i]),
-      text=text[,i],
-      hoverinfo='text'
-    )
-  }
+  # for (i in 2:ncol(mt)){
+  #   p <- p %>% add_trace(y=mt[,i],
+  #     name=colnames(mt)[i],
+  #     marker=list(color=colors[i]),
+  #     text=text[,i],
+  #     hoverinfo='text'
+  #   )
+  # }
+
+x <- rownames(mt)
+y <- colnames(mt)
+dd <- as.data.frame(cbind(x, mt))
+colnames(dd)[1] <- "chromosome"
+
+  p <- plot_ly(dd, x = ~chromosome, y = ~normal_loss,
+ type = 'bar', name = "", 
+ marker=list(color=colors[1], showlegend=FALSE),
+      text=text[,1],
+      hoverinfo='text', showlegend=FALSE) %>%
+  add_trace(y = ~loss, name = 'loss', 
+    marker=list(color=colors[2]),
+      text=text[,2],
+      hoverinfo='text', showlegend=FALSE) %>%
+  add_trace(y = ~gain, name = 'gain',
+    marker=list(color=colors[3]),
+      text=text[,3],
+      hoverinfo='text', showlegend=FALSE) %>%
+  add_trace(y = ~normal_gain, name = '',
+    marker=list(color=colors[4]),
+      text=text[,4],
+      hoverinfo='text', showlegend=FALSE)
 
 
 
@@ -190,3 +213,5 @@ if (!is.null(bar_gap)){
 
 p2
 }
+
+

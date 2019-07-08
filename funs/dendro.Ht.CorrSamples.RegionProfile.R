@@ -64,18 +64,20 @@ dendro.Ht.CorrSamples.RegionProfile <- function(data, corr.method, mat_vars, var
     #########################
 
     # Preparing 'p_dendro_cor':
-    annot <- mat_variables[,l_vars_annot_in_plot]
+    annot <- as.matrix(mat_variables[,l_vars_annot_in_plot])
+    colnames(annot) <- track_vars
+    rownames(annot) <- as.character(mat_variables[,"ID"])
 
-    if (length(vars_dendro)>1) {
-    	rownames(annot) <- as.character(mat_variables[,"ID"])
-    }
+    # if (length(vars_dendro)>1) {
+    #   rownames(annot) <- as.character(mat_variables[,"ID"])
+    # }
 
     p_dendro_cor <- heatmaply(data2, k_col = 1,
       dendrogram="both", plot_method="ggplot",
       col_side_colors=annot,
       col_side_palette=v_empty,
-      labCol= NA,
-      labRow= NA,
+      labCol= NULL,
+      labRow= NULL,
       symm = T,
       hide_colorbar=F,
       margins=c(90, 90, 50, 50))

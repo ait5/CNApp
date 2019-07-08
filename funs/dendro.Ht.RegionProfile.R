@@ -84,11 +84,13 @@ dendro.Ht.RegionProfile <- function(data, dendro, mat_vars, segmented_file, vari
     # Preparing 'p_dendro':
     rownames(mat_ht) <- as.character(segmented_file[,4])
 
-    annot <- mat_variables[,l_vars_annot_in_plot]
+    annot <- as.matrix(mat_variables[,l_vars_annot_in_plot])
+    colnames(annot) <- track_vars
+    rownames(annot) <- as.character(mat_variables[,"ID"])
 
-    if (length(vars_dendro)>1) {
-    	rownames(annot) <- as.character(mat_variables[,"ID"])
-    }
+    # if (length(vars_dendro)>1) {
+    # 	rownames(annot) <- as.character(mat_variables[,"ID"])
+    # }
     
 
     p_dendro <- heatmaply(mat_ht, k_col = 1,
@@ -99,7 +101,7 @@ dendro.Ht.RegionProfile <- function(data, dendro, mat_vars, segmented_file, vari
       colors=v_colors_ht,
       hide_colorbar=F,
        fontsize_row= fontsize_row,
-      labCol= NA,
+      labCol= NULL,
       margins=c(40, 80, 40, 80))
 
     if (length(track_vars)==1) {
