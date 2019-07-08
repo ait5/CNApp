@@ -39,14 +39,14 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
     title=HTML("<h2 style='text-align:left;margin:5px 0 0 20px'>CNApp</h2> <img style='margin:-60px 0 0 50px' src='ITEMS/imatges/chrom_cnapp.png' width='40%' heigth='40%'>"),
                   
                   dropdownMenu(type="messages", icon=icon("home"), headerText = "", badgeStatus = NULL,
-                               messageItem(icon=icon("home"), href="http://bioinfo.ciberehd.org/CNApp",
+                               messageItem(icon=icon("home"), href="http://cnapp.bsc.es",
                                            from= tags$div(tags$h4("CNApp web page")),
                                            message=HTML("")
                                )
                   ),
                   
                   dropdownMenu(type="messages", icon=icon("info-circle"), headerText = "", badgeStatus = NULL,
-                               messageItem(icon=icon("info-circle"), href="http://bioinfo.ciberehd.org/CNApp/#about",
+                               messageItem(icon=icon("info-circle"), href="http://cnapp.bsc.es/#about",
                                            from= tags$div(tags$h4("About CNApp")),
                                            message=HTML("")
                                )
