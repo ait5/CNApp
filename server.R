@@ -328,7 +328,7 @@ function(input, output, session) {
         data_user <- df
         sample_names <- as.character(unique(data_user[,"ID"])) #obtaining ALL samples names in vector
         
-        each_sample <- as.vector(do.call(cbind, lapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,"ID"]))))
+        each_sample <- as.vector(do.call(cbind, mclapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,"ID"]))))
         
         variables_names <- colnames(data_user)[-c(2:5)]
         
@@ -837,7 +837,7 @@ function(input, output, session) {
     data_user <- data_user[order(data_user[,sample_variable]),]
     sample_names <- as.character(unique(data_user[,sample_variable])) #obtaining ALL samples names in vector
     
-    each_sample <- as.vector(do.call(cbind, lapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,sample_variable]))))
+    each_sample <- as.vector(do.call(cbind, mclapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,sample_variable]))))
     
     col_sample_variable <- which(colnames(data_user)==sample_variable)
     #col_order_var_name <- which(colnames(data_user)==order_var_name)
@@ -2089,7 +2089,7 @@ function(input, output, session) {
 
 
         withProgress(
-          ANS_result_for_fq <- lapply(sp, scoring.segments, segmented_file=segmented_file_fq),
+          ANS_result_for_fq <- mclapply(sp, scoring.segments, segmented_file=segmented_file_fq),
           min = 1,
           max= length(sample_names),
           value = quantile(1:length(sample_names), 0.9),
@@ -2102,12 +2102,12 @@ function(input, output, session) {
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
 
-        values_prova <- lapply(ANS_result_for_fq, function(x) as.numeric(as.character(x[,4])))
+        values_prova <- mclapply(ANS_result_for_fq, function(x) as.numeric(as.character(x[,4])))
 
         fun.fun <- function(x){
           as.vector(as.character(lapply(x,classify.values, gain=low.cutoff.up, loss=low.cutoff.dw)))
         }
-        data_for_fq <- as.data.frame(do.call(cbind, lapply(values_prova, fun.fun)))
+        data_for_fq <- as.data.frame(do.call(cbind, mclapply(values_prova, fun.fun)))
 
         ## Statitstics CNA counts by region
         fun_name <- "fun.grep" # function name
@@ -2359,7 +2359,7 @@ function(input, output, session) {
       cna_scores <- c("BCS", "FCS", "GCS")
       data <- ff_box_score()
 
-      p_scores <- lapply(cna_scores, score.boxplot.by.var, data=data)
+      p_scores <- mclapply(cna_scores, score.boxplot.by.var, data=data)
       
       p_bcs <- p_scores[[1]]
       xlab_bcs <- p_bcs$labels$x
@@ -2811,7 +2811,7 @@ function(input, output, session) {
     data_user <- data_user[order(data_user[,sample_variable]),]
     sample_names <- as.character(unique(data_user[,sample_variable])) #obtaining ALL samples names in vector
     
-    each_sample <- as.vector(do.call(cbind, lapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,sample_variable]))))
+    each_sample <- as.vector(do.call(cbind, mclapply(sample_names, function(x,y){which(y==x)[1]}, y=as.character(data_user[,sample_variable]))))
     
     ##Annotation data:
     annot_data_infile <- input$annot_data_browse #file loaded
@@ -2965,7 +2965,7 @@ function(input, output, session) {
           class_ranges <- c("focal")
         }
         
-        filt_list_1 <- lapply(all_cin_part[["filt_list"]], function(x){
+        filt_list_1 <- mclapply(all_cin_part[["filt_list"]], function(x){
           
           items <-  which(x[,"classified"]%in%class_ranges)
           if (length(items)>0){
@@ -2985,7 +2985,7 @@ function(input, output, session) {
         
         
       } else if (specific_ranges=="All") {
-        filt_list_2 <- lapply(all_cin_part[["filt_list"]],function(x){x[,1:5]})
+        filt_list_2 <- mclapply(all_cin_part[["filt_list"]],function(x){x[,1:5]})
         names_in_cin <- names(filt_list_2)
         
       }
@@ -3090,7 +3090,7 @@ function(input, output, session) {
     x <- ANS_result
     col_selected <- 4 # 'mean.reg.sample' column
     
-    data.0.means <- as.data.frame(do.call(cbind, lapply(x, function(x) x[,col_selected])))#creating data frame with values of certain column ('col_selected')
+    data.0.means <- as.data.frame(do.call(cbind,mclapply(x, function(x) x[,col_selected])))#creating data frame with values of certain column ('col_selected')
     rownames(data.0.means) <- as.character(segmented_file[,4])
     
     GLOBAL_DF <<- cbind(GLOBAL_DF, t(data.0.means))
@@ -3258,12 +3258,12 @@ function(input, output, session) {
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
         
-        values_prova <- lapply(ANS_result, function(x) as.numeric(as.character(x[,4])))
+        values_prova <-mclapply(ANS_result, function(x) as.numeric(as.character(x[,4])))
         
         fun.fun <- function(x){
           as.vector(as.character(lapply(x,classify.values, gain=re_gain_th, loss=re_loss_th)))
         }
-        data.0.events <- as.data.frame(do.call(cbind, lapply(values_prova, fun.fun)))
+        data.0.events <- as.data.frame(do.call(cbind,mclapply(values_prova, fun.fun)))
         data.events <- data.0.events[,order_by_variable]
         ## CNA events plot summary ##
         
@@ -3485,7 +3485,7 @@ function(input, output, session) {
           
           genes_in_reg <- refGene_mat[rows_in_refGene,c("symbol_name", "chrom", "strand", "start", "end")]
           uni_g <- unique(as.character(genes_in_reg[,1]))
-          each_gene <- as.vector(do.call(cbind, lapply(uni_g, function(x,y){which(y==x)[1]}, y=as.character(genes_in_reg[,1]))))
+          each_gene <- as.vector(do.call(cbind, mclapply(uni_g, function(x,y){which(y==x)[1]}, y=as.character(genes_in_reg[,1]))))
           
           genes_in_reg_2 <- genes_in_reg[each_gene,]
           genes_in_reg_2
@@ -3669,15 +3669,15 @@ function(input, output, session) {
         
         xx <- cbind(data.means, seq_regs)
         
-        ans <- lapply(sample_names, function(x){extract.stats(xx, x, "seq_regs")})
+        ans <- mclapply(sample_names, function(x){extract.stats(xx, x, "seq_regs")})
         names(ans) <- sample_names
         final_ans <- ans
         
-        min_values_samples <- as.vector(do.call(rbind, lapply(final_ans, function(x) as.numeric(as.character(x[["min"]])))))
+        min_values_samples <- as.vector(do.call(rbind, mclapply(final_ans, function(x) as.numeric(as.character(x[["min"]])))))
         top3_MIN_samples <- sample_names[order(min_values_samples)][1:3]
         top3_MIN_samples_values <- min_values_samples[order(min_values_samples)][1:3]
         
-        max_values_samples <- as.vector(do.call(rbind, lapply(final_ans, function(x) as.numeric(as.character(x[["max"]])))))
+        max_values_samples <- as.vector(do.call(rbind, mclapply(final_ans, function(x) as.numeric(as.character(x[["max"]])))))
         top3_MAX_samples <- rev(sample_names[order(max_values_samples)])[1:3]
         top3_MAX_samples_values <- rev(max_values_samples[order(max_values_samples)])[1:3]
         
@@ -3688,15 +3688,15 @@ function(input, output, session) {
         
         seq_regs <- as.character(segmented_file[,4])
         
-        ans <- lapply(seq_regs, function(x){extract.stats(xx, x, "sample_names")})
+        ans <- mclapply(seq_regs, function(x){extract.stats(xx, x, "sample_names")})
         names(ans) <- seq_regs
         final_ans <- ans
         
-        min_values_regions <- as.vector(do.call(rbind, lapply(final_ans, function(x) as.numeric(as.character(x[["min"]])))))
+        min_values_regions <- as.vector(do.call(rbind, mclapply(final_ans, function(x) as.numeric(as.character(x[["min"]])))))
         top3_MIN_region <- seq_regs[order(min_values_regions)][1:3]
         top3_MIN_region_values <- min_values_regions[order(min_values_regions)][1:3]
         
-        max_values_regions <- as.vector(do.call(rbind, lapply(final_ans, function(x) as.numeric(as.character(x[["max"]])))))
+        max_values_regions <- as.vector(do.call(rbind, mclapply(final_ans, function(x) as.numeric(as.character(x[["max"]])))))
         top3_MAX_region <- rev(seq_regs[order(max_values_regions)])[1:3]
         top3_MAX_region_values <- rev(max_values_regions[order(max_values_regions)])[1:3]
         
@@ -4458,7 +4458,7 @@ function(input, output, session) {
         for (i in 1:n_groups){
           name_group <- as.character(real_groups[i])
           samples_g <- which(col_group_var==name_group)
-          counts_list <- lapply(1:nrow(mat), function(x){
+          counts_list <- mclapply(1:nrow(mat), function(x){
             sample_col <- mat[x,samples_g]
             n_gain <- length(which(sample_col >= gain_th)) # gain threshold
             n_loss <- length(which(sample_col <= loss_th)) # loss threshold
@@ -4884,7 +4884,7 @@ function(input, output, session) {
           
           genes_in_reg <- refGene_mat[rows_in_refGene,c("symbol_name", "chrom", "strand", "start", "end")]
           uni_g <- unique(as.character(genes_in_reg[,1]))
-          each_gene <- as.vector(do.call(cbind, lapply(uni_g, function(x,y){which(y==x)[1]}, y=as.character(genes_in_reg[,1]))))
+          each_gene <- as.vector(do.call(cbind, mclapply(uni_g, function(x,y){which(y==x)[1]}, y=as.character(genes_in_reg[,1]))))
           
           genes_in_reg_2 <- genes_in_reg[each_gene,]
           genes_in_reg_2
@@ -6015,9 +6015,9 @@ function(input, output, session) {
           groups <- sort(groups_var)
           colors <- fixed_colors[1:length(groups)]
           
-          mat <- lapply(groups, v_by_group, y=data, w="sample_group",z="prediction_group")
+          mat <- mclapply(groups, v_by_group, y=data, w="sample_group",z="prediction_group")
           names(mat) <- groups
-          mat2 <- as.data.frame(do.call(cbind, lapply(mat, fun.count, y=groups)))
+          mat2 <- as.data.frame(do.call(cbind, mclapply(mat, fun.count, y=groups)))
           rownames(mat2) <- groups
           # mat2 == cols are REAL groups / rows are PREDICTED groups
           
