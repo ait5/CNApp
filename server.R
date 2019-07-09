@@ -2589,6 +2589,60 @@ function(input, output, session) {
       )
       
     }
+    #################################
+    ###### Survival analysis ########
+    #################################
+    
+    ## Variable selection (by user)
+    # if ( length(grep("surv", mat_variables.0[,1]))>0 ){
+    #   
+    #   var_list <- colnames(GLOBAL_DF)
+    #   
+    #   output$prepare_surv_analysis <- renderUI({
+    #     div(
+    #       HTML("<h4>Choose your variables:</h4>"),
+    #       
+    #       fluidRow(
+    #         column(4,
+    #                #variable for survival status
+    #                selectizeInput("var_status", "Survival STATUS variable", choices= var_list, multiple=FALSE, selected=)
+    #         ),
+    #         column(4,
+    #                #variable for survival timing
+    #                selectizeInput("var_time", "Survival TIME variable", choices= var_list, multiple=FALSE, selected= sel_list_2[[1]][1])
+    #         ), 
+    #         column(4,
+    #                #variable to define sample groups in survival analysis
+    #                selectizeInput("var_surv_groups", "Variable to DEFINE survival groups", choices= var_list, multiple=FALSE, selected= sel_list_2[[1]][1])
+    #         )
+    #       ),
+    #       
+    #       actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
+    #       busyIndicator(text="Running", wait=200)
+    #     )
+    #   })
+    # }
+    # 
+    # ## Assessing variables
+    # 
+    # 
+    # 
+    # 
+    # ## Variable analysis
+    # 
+    # name_var_surv <- as.character(input$var_surv_groups) 
+    # col_variable <- which(colnames(cms)==name_var_surv)
+    # 
+    # data <- cbind(d2[,1:3], cms[,col_variable])
+    # colnames(data)[1:4] <- c("id", "status", "time", "variable")
+    # colors <- c("brown", "cyan")
+    # 
+    # source("survival.plot.R")
+    # survival.plot(data, colors)
+    
+    
+    
+    
     
     
     #  output$predictions.tab <- renderDataTable({
@@ -4323,7 +4377,7 @@ function(input, output, session) {
           tickvals[1] <- tickvals[1] + (range*0.1)
           tickvals[length(tickvals)] <- tickvals[length(tickvals)] - (range*0.1)
           
-          x <- paste("'", as.character(colnames(mat2)), "'", sep="")
+          x <- x
           
           p_pvalues <- plot_ly(y=y, x=x, z = as.matrix(round(mat2[re_order_seq,],3)), type = "heatmap", colors=colfunc, hoverinfo='x+y+z')%>%
             colorbar(
@@ -4593,7 +4647,7 @@ function(input, output, session) {
           re_order_seq <- seq(nrow(mat2),1, length=nrow(mat2))
           
           y <- segmented_file[re_order_seq,4]
-          x <- paste("'", colnames(mat2), "'", sep="")
+          x <- x
           
           tickvals <- c(min(as.matrix(round(mat2[re_order_seq,],3))), max_pval)
           range <- tickvals[length(tickvals)]-tickvals[1]
