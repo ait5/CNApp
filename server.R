@@ -28,6 +28,8 @@ library(GenVisR)
 library(doBy)
 library(parallel)
 library(caret)
+library(survival)
+library(survminer)
 
 
 function(input, output, session) {
@@ -71,7 +73,7 @@ function(input, output, session) {
   aux_files_dir <- "aux_files"
   # directory for functions in app
   
-  demo_data_file <- "demo_data_random160COAD_cms_14.11.2018.txt"
+  demo_data_file <- "demo_data_random160COAD_cms_SURVIVAL_14.11.2018.txt"
   # directory for functions in app
   
   ## App fixed terms ##
@@ -2594,52 +2596,105 @@ function(input, output, session) {
     #################################
     
     ## Variable selection (by user)
-    # if ( length(grep("surv", mat_variables.0[,1]))>0 ){
-    #   
-    #   var_list <- colnames(GLOBAL_DF)
-    #   
-    #   output$prepare_surv_analysis <- renderUI({
-    #     div(
-    #       HTML("<h4>Choose your variables:</h4>"),
-    #       
-    #       fluidRow(
-    #         column(4,
-    #                #variable for survival status
-    #                selectizeInput("var_status", "Survival STATUS variable", choices= var_list, multiple=FALSE, selected=)
-    #         ),
-    #         column(4,
-    #                #variable for survival timing
-    #                selectizeInput("var_time", "Survival TIME variable", choices= var_list, multiple=FALSE, selected= sel_list_2[[1]][1])
-    #         ), 
-    #         column(4,
-    #                #variable to define sample groups in survival analysis
-    #                selectizeInput("var_surv_groups", "Variable to DEFINE survival groups", choices= var_list, multiple=FALSE, selected= sel_list_2[[1]][1])
-    #         )
-    #       ),
-    #       
-    #       actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
-    #       busyIndicator(text="Running", wait=200)
-    #     )
-    #   })
-    # }
-    # 
-    # ## Assessing variables
-    # 
-    # 
-    # 
-    # 
-    # ## Variable analysis
-    # 
-    # name_var_surv <- as.character(input$var_surv_groups) 
-    # col_variable <- which(colnames(cms)==name_var_surv)
-    # 
-    # data <- cbind(d2[,1:3], cms[,col_variable])
-    # colnames(data)[1:4] <- c("id", "status", "time", "variable")
-    # colors <- c("brown", "cyan")
-    # 
-    # source("survival.plot.R")
-    # survival.plot(data, colors)
+    #if ( length(grep("surv", mat_variables.0[,1]))>0 ){
+
+      var_list <- colnames(mat_variables.0)
+      var_list_2 <- var_list[-c(which(var_list=="ID"), grep("status", var_list), grep("time", var_list) )]
+
+      output$prepare_surv_analysis <- renderUI({
+        div(
+          HTML("<h5>Choose your variables:</h5>"),
+
+          fluidRow(
+            column(4,
+                   #variable for survival status
+                   selectizeInput("var_status", "Survival STATUS variable", choices= var_list[grep("status", var_list)], multiple=FALSE, selected= var_list[grep("status", var_list)] )
+            ),
+            column(4,
+                   #variable for survival timing
+                   selectizeInput("var_time", "Survival TIME variable", choices= var_list[grep("time", var_list)], multiple=FALSE, selected= var_list[grep("time", var_list)] )
+            ),
+            column(4,
+                   #variable to define sample groups in survival analysis
+                   selectizeInput("var_surv_groups", "Variable to DEFINE survival groups", choices= var_list_2, multiple=FALSE )
+            )
+          ),
+
+          actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
+          busyIndicator(text="Running", wait=200)
+        )
+      })
+    #}
+
+    ## Assessing variables
+
+
+
+    ## Variable analysis
+    observeEvent(input$button_run_surv, {
+      mat_vars <- mat_variables.0
+      
+      surv_var_status <- as.character(input$var_status)
+      surv_var_time <- as.character(input$var_time)
+      surv_var_groups <- as.character(input$var_surv_groups)
+      
+      #col_variable <- which(colnames(mat_variables.0)==surv_var_groups)
+      if (surv_var_groups=="none") {
+        # data <- mat_vars[,c("ID", surv_var_status, surv_var_time)]
+        # colnames(data) <- c("id", "status", "time")
+        
+        
+      } else {
+        data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
+        colnames(data) <- c("id", "status", "time", "variable")
+        
+        # colors <- c("brown", "cyan")
+        colors <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==surv_var_groups),"color_palette"])
+        
+        
+        fun_name <- "survival.plot" # function name
+        my_fun <- paste(fun_name, ".R", sep="") # file function name
+        source_fun <- paste(dir_funs, "/", my_fun, sep="")
+        source(source_fun) # sourcing fun into R
+        
+        p_survival <- survival.plot(data, colors)
+        
+        # output$message <- renderUI({
+        #   div(
+        #     HTML(colors)
+        #   )
+        # })
+        
+        output$surv_curves_plot <- renderPlot({
+          p_survival
+        })
+        
+        
+        
+        
+        output$dw_button_survival_plot <- renderUI(
+          div(style="text-align:right",
+              downloadButton("download_survival_plot", label="PNG")
+              
+          )
+        )
+        
+        
+        
+        output$download_survival_plot <- downloadHandler(
+          filename= as.character(paste("Kaplan-Meier_survival_by_", surv_var_groups, "_", Sys.time(), ".png", sep="")),
+          content=function (file){
+
+            ggexport(p_survival, filename = file, width=1000, height=900, res=150)
+            
+          }
+        )
+        
+      }
+      
     
+    
+    })
     
     
     

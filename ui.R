@@ -28,6 +28,8 @@ library(GenVisR)
 library(doBy)
 library(parallel)
 library(caret)
+library(survival)
+library(survminer)
 # setwd("/srv/shiny-server/CNApp/")
 
 
@@ -344,19 +346,19 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                                    ),
 
                                    br(),
-                                   br(),
-                                   br(),
-                                   
-                                  
-                                  
-                                   
-                                   HTML("<h4 style='text-align:center'><b>Hierarchical clustering for sample CNA Scores</b></h4>"),
-                                   uiOutput("ht_scores_plot_button"),
-                                   br(),
-                                   plotlyOutput("heatmap_scores",width="100%", height="600px"),
-                                   uiOutput("dw_buttons_ht_scores"),
-                                   
-                                   br(),
+                                   # br(),
+                                   # br(),
+                                   # 
+                                   # 
+                                   # 
+                                   # 
+                                   # HTML("<h4 style='text-align:center'><b>Hierarchical clustering for sample CNA Scores</b></h4>"),
+                                   # uiOutput("ht_scores_plot_button"),
+                                   # br(),
+                                   # plotlyOutput("heatmap_scores",width="100%", height="600px"),
+                                   # uiOutput("dw_buttons_ht_scores"),
+                                   # 
+                                   # br(),
                                    br()
                                    # downloadButton("download_scores_raw",label="Download scores (raw)")
                           ),
@@ -376,6 +378,32 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                                    dataTableOutput("pval.nonparametric"),
                                    div(style="text-align:right", downloadButton("download_pval.nonparametric",label="TSV")), 
                                    
+                                   br(),
+                                   br()
+                          ),
+                          
+                          tabPanel("Survival analysis",value="clinical",
+                                   
+                                   br(),
+                                   HTML("<h4><b>Survival analysis</b> <i>(by annotation variables)</i></h4>"),
+                                   
+                                   div(style="text-align:center", uiOutput("prepare_surv_analysis")),
+                                  
+                                   uiOutput("button_run_surv"),
+                                   
+                                   br(),
+                                   
+                                   fluidRow(
+                                     column(2),
+                                     column(8,
+                                            # uiOutput("message"),
+                                            plotOutput("surv_curves_plot"),
+                                            uiOutput("dw_button_survival_plot")
+                                     ),
+                                     column(2)
+                                   ),
+                                   
+                                   br(),
                                    br(),
                                    br()
                           )
