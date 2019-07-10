@@ -4,7 +4,7 @@ CNApp provides a unique scenario to comprehensively analyze CNAs and integrate t
 
 Functions of CNApp comprise three main sections: 1- Re-Seg & Score: re-segmentation, CNA scores computation, variable association and survival analysis, 2- Region profile: genome-wide CNA profiling, descriptive regions assessment and 3- Classifier model: machine learning classification model predictions.
 
-CNApp is hosted at http://bioinfo.ciberehd.org/CNApp. 
+CNApp is hosted at http://cnapp.bsc.es
 
 Please give us credit and cite CNApp when you use it for your integrative CNA analysis:
 
@@ -25,6 +25,8 @@ if(!require(shinyjs)) install.packages("shinyjs")
 if(!require(shinythemes)) install.packages("shinythemes")
 if(!require(shinyWidgets)) install.packages("shinyWidgets")
 if(!require(shinydashboard)) install.packages("shinydashboard")
+if(!require(shinydashboard)) install.packages("survival")
+if(!require(shinydashboard)) install.packages("survminer")
 
 if(!require(V8)) install.packages("V8")
 #if any issue here like 'ERROR: configuration failed for package ‘curl’' or 'ERROR: configuration failed for package ‘V8’' follow printed instructions on your command-line window
