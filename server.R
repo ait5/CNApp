@@ -2595,7 +2595,7 @@ function(input, output, session) {
     ###### Survival analysis ########
     #################################
     
-    var_list <- colnames(mat_variables.0)
+    var_list <- colnames(ff)
     
     if ( length( grep("surv_status", var_list) ) > 0 & length( grep("surv_time", var_list) ) > 0 ){
       
@@ -2619,81 +2619,210 @@ function(input, output, session) {
             column(4
                    
             )
-          ),
-          
-          actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
-          busyIndicator(text="Running", wait=200)
+          )
         )
       })
       
       
       ## Assessing variables
-      
-      
-      
-      ## Variable analysis
-      observeEvent(input$button_run_surv, {
-        mat_vars <- mat_variables.0
+     
+      subselect_g_var <- eventReactive(input$var_surv_groups, {
+        g_var <- as.character(input$var_surv_groups)
         
-        surv_var_status <- as.character(input$var_status)
-        surv_var_time <- as.character(input$var_time)
-        surv_var_groups <- as.character(input$var_surv_groups)
-        
-        #col_variable <- which(colnames(mat_variables.0)==surv_var_groups)
-        if (surv_var_groups=="none") {
-          # data <- mat_vars[,c("ID", surv_var_status, surv_var_time)]
-          # colnames(data) <- c("id", "status", "time")
+        if ( g_var=="FCS"| g_var=="BCS" | g_var=="GCS" ) {
           
+          g_values <- as.numeric(as.character(ff[,colnames(ff)==g_var]))
+          div(
+            sliderInput("subsel_g_var", "Groups to compare", min=min(g_values, na.rm = T), 
+                        max=max(g_values, na.rm = T), 
+                        value = median(g_values, na.rm = T) ) 
+          )
           
         } else {
-          data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
-          colnames(data) <- c("id", "status", "time", "variable")
+          class_g_var <- variables_info_mat[which(variables_info_mat[,"name_var"]==g_var),"class_var"]
           
-          # colors <- c("brown", "cyan")
-          colors <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==surv_var_groups),"color_palette"])
-          
-          
-          fun_name <- "survival.plot" # function name
-          my_fun <- paste(fun_name, ".R", sep="") # file function name
-          source_fun <- paste(dir_funs, "/", my_fun, sep="")
-          source(source_fun) # sourcing fun into R
-          
-          p_survival <- survival.plot(data, colors)
-          
-          # output$message <- renderUI({
-          #   div(
-          #     HTML(colors)
-          #   )
-          # })
-          
-          output$surv_curves_plot <- renderPlot({
-            p_survival
-          })
-          
-          
-          
-          
-          output$dw_button_survival_plot <- renderUI(
-            div(style="text-align:right",
-                downloadButton("download_survival_plot", label="PNG")
-                
+          if (class_g_var=="categoric") {
+            l_var <- sort(unique(as.character(mat_variables[,colnames(mat_variables)==g_var])))
+            div(
+              # HTML(paste("<i>(", length(l_var), " groups)</i>", sep="")),
+              # br(),
+              checkboxGroupInput("subsel_g_var", "Groups to compare", choices = l_var, selected = l_var)
             )
-          )
-          
-          
-          
-          output$download_survival_plot <- downloadHandler(
-            filename= as.character(paste("Kaplan-Meier_survival_by_", surv_var_groups, "_", Sys.time(), ".png", sep="")),
-            content=function (file){
-              
-              ggexport(p_survival, filename = file, width=1000, height=900, res=150)
-              
-            }
-          )
+            
+          } else if (class_g_var=="numeric"){
+            g_values <- round(as.numeric(as.character(mat_variables[,colnames(mat_variables)==g_var])),3)
+            div(
+              # HTML(paste("<i>(",length(unique(values)), " groups)</i>", sep="")),
+              # br(),
+              # sliderInput("slider_group_var", "Groups to compare", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))),
+              sliderInput("subsel_g_var", "Groups to compare", min=min(g_values, na.rm = T), 
+                          max=max(g_values, na.rm = T), 
+                          value = median(g_values, na.rm = T) ) 
+            )
+          }
           
         }
         
         
+      })
+      
+      
+      output$sub_g_var <- renderUI({
+        div(
+          subselect_g_var(),
+          
+          actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
+          busyIndicator(text="Running", wait=200)
+          
+        )
+      })
+      
+      
+      ## Variable analysis
+      observeEvent(input$button_run_surv, {
+        mat_vars <- ff
+        
+        g_var <- as.character(input$var_surv_groups)
+        
+        if ( g_var=="FCS"| g_var=="BCS" | g_var=="GCS" ) {
+          
+          value <- as.numeric(as.character(input$subsel_g_var))
+          
+          surv_var_status <- as.character(input$var_status)
+          surv_var_time <- as.character(input$var_time)
+          surv_var_groups <- g_var
+          #surv_var_sub_groups <- col_group_var
+          
+          data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
+          colnames(data) <- c("id", "status", "time", "variable")
+          data$variable <- as.numeric(as.character(data$variable))
+          r_low <- which(data$variable < value)
+          r_high <- which(data$variable >= value)
+          
+          data[r_low,"variable"] <- as.character(paste(g_var, "<", value, sep=""))
+          data[r_high,"variable"] <- as.character(paste(g_var, ">=", value, sep=""))
+          n_groups <- unique(data$variable)
+          
+          if (g_var == "BCS") {
+            colors <- "deepskyblue"
+          } else if (g_var == "FCS") {
+            colors <- "darkorange"
+          } else if (g_var == "GCS") {  
+            colors <- "darkkhaki"
+          }
+          
+        } else {
+          
+          class_g_var <- variables_info_mat[which(variables_info_mat[,"name_var"]==g_var),"class_var"]
+          
+          if (class_g_var=="numeric") {
+            value <- as.numeric(as.character(input$subsel_g_var))
+            # min1 <- min(values1, na.rm = T)
+            # max1 <- max(values1, na.rm = T)
+            # rows_in_annotation1 <- which(as.numeric(as.character(mat_vars[,g_var]))>=min1 & as.numeric(as.character(mat_vars[,g_var]))<=max1)
+            # 
+            # 
+            # col_group_var <- sort(as.numeric(as.character(mat_vars[rows_in_annotation,g_var])))
+            # real_groups <- unique(col_group_var)
+          } 
+          if (class_g_var=="categoric"){
+            real_groups <- input$subsel_g_var
+            rows_in_annotation <- which(mat_vars[,g_var]%in%real_groups)
+            col_group_var <- as.character(mat_vars[rows_in_annotation,g_var])
+          }
+          
+          surv_var_status <- as.character(input$var_status)
+          surv_var_time <- as.character(input$var_time)
+          surv_var_groups <- g_var
+          surv_var_sub_groups <- col_group_var
+          
+          data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
+          colnames(data) <- c("id", "status", "time", "variable")
+          
+          data <- data[data$variable %in% surv_var_sub_groups,]
+          n_groups <- unique(data$variable)
+          
+          colors <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==surv_var_groups),"color_palette"])
+          
+        }
+        
+
+
+          if ( length( n_groups ) <= 1 ) {
+            
+            message <- "<i style=color:red>Not enough groups! (Please, select more groups...)</i>"
+            output$not_enough_groups_surv <- renderUI({
+              div(
+                HTML(message)
+              )
+            })
+            
+            output$surv_curves_plot <- renderPlot({
+              
+            })
+            
+            output$dw_button_survival_plot <- renderUI(
+              div(HTML(""))
+            )
+            
+            output$download_survival_plot <- downloadHandler(
+              div(HTML(""))
+            )
+            
+          } else if ( length( n_groups ) > 1 ) {
+            
+            message <- ""
+            output$not_enough_groups_surv <- renderUI({
+              div(
+                HTML(message)
+              )
+            })
+            
+            
+            # data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
+            # colnames(data) <- c("id", "status", "time", "variable")
+            # 
+            # data <- data[data$variable %in% surv_var_sub_groups,]
+            
+            # colors <- c("brown", "cyan")
+            
+            fun_name <- "survival.plot" # function name
+            my_fun <- paste(fun_name, ".R", sep="") # file function name
+            source_fun <- paste(dir_funs, "/", my_fun, sep="")
+            source(source_fun) # sourcing fun into R
+            
+            p_survival <- survival.plot(data, colors)
+            
+            # output$message <- renderUI({
+            #   div(
+            #     HTML(colors)
+            #   )
+            # })
+            
+            output$surv_curves_plot <- renderPlot({
+              p_survival
+            })
+            
+            
+            output$dw_button_survival_plot <- renderUI(
+              div(style="text-align:right",
+                  downloadButton("download_survival_plot", label="PNG")
+                  
+              )
+            )
+            
+            output$download_survival_plot <- downloadHandler(
+              filename= as.character(paste("Kaplan-Meier_survival_by_", surv_var_groups, "_", Sys.time(), ".png", sep="")),
+              content=function (file){
+                
+                ggexport(p_survival, filename = file, width=1000, height=900, res=150)
+                
+              }
+            )
+            
+          } # else if ( length( surv_var_sub_groups ) > 1 )
+          
+          
         
       })
       

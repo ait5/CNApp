@@ -24,7 +24,17 @@ levels(data[,2]) <- c(1,2) # if Dead/Alive: Alive=1 and Dead=2
   if ( length( which(is.na(legend_labs)) ) > 0 ) {
     legend_labs <- legend_labs[-which(is.na(legend_labs))]
   }
-  colors <- colorRampPalette(brewer.pal(5, colors), alpha=TRUE)(length(legend_labs))
+  
+  if (colors == "deepskyblue") {
+    colors2 <- colorRampPalette(c("deepskyblue", "deepskyblue4"), alpha=TRUE)(length(legend_labs))
+  } else if (colors == "darkorange") {
+    colors2 <- colorRampPalette(c("darkorange", "darkorange4"), alpha=TRUE)(length(legend_labs))
+  } else if (colors == "darkkhaki") {  
+    colors2 <- colorRampPalette(c("darkkhaki", "darkolivegreen"), alpha=TRUE)(length(legend_labs))
+  }   else {
+    colors2 <- colorRampPalette(brewer.pal(5, colors), alpha=TRUE)(length(legend_labs))
+  }
+  
   
 # }
 
@@ -32,7 +42,7 @@ gg <- ggsurvplot(
   f1, 
   data = data, 
   size = 1,                 # change line size
-  palette = colors,# custom color palettes
+  palette = colors2,# custom color palettes
   conf.int = FALSE,          # Add confidence interval
   pval = TRUE,              # Add p-value
   risk.table = TRUE,        # Add risk table

@@ -391,6 +391,9 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                                    br(),
                                    
                                    div(style="text-align:center", uiOutput("prepare_surv_analysis")),
+                                   uiOutput("sub_g_var"),
+                                   uiOutput("not_enough_groups_surv"),
+                                   br(),
                                   
                                    uiOutput("button_run_surv"),
                                    
