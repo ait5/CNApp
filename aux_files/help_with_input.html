@@ -12,8 +12,6 @@ Genome builds <b><i>hg19</i></b> and <b><i>hg38</i></b> are accepted and must be
 <br></br>
 Decimal character ('.' or ',') and column field ('tab' or ',') must be specified.
 <br></br>
-<div style="color:red">IMPORTANT (<i>for <u>web version</u> of CNApp</i>):</div>
-Only up to 160 samples can be uploaded. Please, reduce number of samples to 160 or download local version at <a href='https://github.com/ait5/CNApp' target='_blank'><b><i>https://github.com/ait5/CNApp</i></b></a>
 
 <br><br></br>
 Minimum input file example:
@@ -27,6 +25,8 @@ Minimum input file example:
     <th>seg.mean</th>
     <th>purity *</th>
     <th>BAF *</th>
+    <th>surv_status **</th>
+    <th>surv_time **</th>
     <th></th>
     <th>annotation <i>n</i></th>
 
@@ -39,6 +39,8 @@ Minimum input file example:
     <td>-0.422</td>
     <td>0.59</td>
     <td>0.5</td>
+    <td>1</td>
+    <td>775</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -50,6 +52,8 @@ Minimum input file example:
     <td>0.206</td>
     <td>0.59</td>
     <td>0.47</td>
+    <td>1</td>
+    <td>775</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -61,6 +65,8 @@ Minimum input file example:
     <td>-0.456</td>
     <td>0.59</td>
     <td>0.61</td>
+    <td>1</td>
+    <td>775</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -72,6 +78,8 @@ Minimum input file example:
     <td>0.704</td>
     <td>0.59</td>
     <td>0.59</td>
+    <td>1</td>
+    <td>775</td>
     <td>----</td>
   </tr>
   <tr>
@@ -82,6 +90,8 @@ Minimum input file example:
     <td>-0.422</td>
     <td>0.59</td>
     <td>0.5</td>
+    <td>1</td>
+    <td>775</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -93,6 +103,8 @@ Minimum input file example:
     <td>0.348</td>
     <td>0.67</td>
     <td>0.59</td>
+    <td>1</td>
+    <td>1419</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -104,6 +116,8 @@ Minimum input file example:
     <td>0.362</td>
     <td>0.67</td>
     <td>0.42</td>
+    <td>1</td>
+    <td>1419</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -115,6 +129,8 @@ Minimum input file example:
     <td>0.365</td>
     <td>0.67</td>
     <td>0.39</td>
+    <td>1</td>
+    <td>1419</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -126,6 +142,8 @@ Minimum input file example:
     <td>2.461</td>
     <td>0.67</td>
     <td>0.48</td>
+    <td>1</td>
+    <td>1419</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -137,6 +155,8 @@ Minimum input file example:
     <td>0.354</td>
     <td>0.82</td>
     <td>0.45</td>
+    <td>2</td>
+    <td>1305</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -148,6 +168,8 @@ Minimum input file example:
     <td>0.351</td>
     <td>0.82</td>
     <td>0.46</td>
+    <td>2</td>
+    <td>1305</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -159,6 +181,8 @@ Minimum input file example:
     <td>-0.792</td>
     <td>0.82</td>
     <td>0.38</td>
+    <td>2</td>
+    <td>1305</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -170,6 +194,8 @@ Minimum input file example:
     <td>1.542</td>
     <td>0.82</td>
     <td>0.55</td>
+    <td>2</td>
+    <td>1305</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -181,6 +207,8 @@ Minimum input file example:
     <td>0.225</td>
     <td>0.65</td>
     <td>0.64</td>
+    <td>1</td>
+    <td>1068</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -192,6 +220,8 @@ Minimum input file example:
     <td>1.074</td>
     <td>0.65</td>
     <td>0.51</td>
+    <td>1</td>
+    <td>1068</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -203,6 +233,8 @@ Minimum input file example:
     <td>1.606</td>
     <td>0.65</td>
     <td>0.49</td>
+    <td>1</td>
+    <td>1068</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -214,6 +246,8 @@ Minimum input file example:
     <td>1.071</td>
     <td>0.65</td>
     <td>0.58</td>
+    <td>1</td>
+    <td>1068</td>
     <th></th>
     <td>----</td>
   </tr>
@@ -221,7 +255,9 @@ Minimum input file example:
 
 <font size="1">(*) If available, it is recommended to include sample purity (purity) and allelic fraction (BAF) values, which can improve the accuracy of CNA calls and provide information of copy-number neutral loss-of-heterozigosity (CN-LOH).</font>
 <br></br>
-<u><b>IMPORTANT</b>: file HEADER is mandatory</u>. MUST contain ' <i>ID</i> ', ' <i>chr</i> ', ' <i>loc.start</i> ', ' <i>loc.end</i> ' and ' <i>seg.mean</i> ' (and, optionally, '<i>purity</i>' and/or '<i>BAF</i>') terms in order to interpret genomic regions and extra user variables.
+<font size="1">(**) <b>SURVIVAL ANALYSIS</b>: To perform survival analysis using CNApp users must include annotation for status and time (mandatory column headers as '<i>surv_status</i>' and '<i>surv_time</i>').</font>
+<br></br>
+<u><b>IMPORTANT</b>: file HEADER is mandatory</u>. MUST contain ' <i>ID</i> ', ' <i>chr</i> ', ' <i>loc.start</i> ', ' <i>loc.end</i> ' and ' <i>seg.mean</i> ' (and, optionally, '<i>purity</i>', '<i>BAF</i>', '<i>surv_status</i>' and '<i>surv_time</i>') terms in order to interpret genomic regions and extra user variables.
 <br></br>
 Use our <i><b>Demo data</b></i> to play with the app.<br>
 <i><b>Demo data</b></i>: genomic ranges describing somatic copy number alterations (SCNAs) from 160 TCGA-COAD samples.
