@@ -514,7 +514,7 @@ function(input, output, session) {
                                   numericInput("high.gain", "High gain", value=high.gain.value, step = 0.01, width = NULL),
                                   numericInput("normal.gain", "Normal gain", value=normal.gain.value,  step = 0.01, width = NULL),
                                   numericInput("low.gain", "Low gain", value=low.gain.value,  step = 0.01, width = NULL)
-
+                                  
                            ),
                            column(6,
                                   numericInput("low.loss", "Low loss", value=low.loss.value,  step = 0.01, width = NULL),
@@ -601,7 +601,7 @@ function(input, output, session) {
                            column(6,
                                   numericInput("min.baf", "Minimum BAF to CN-LOH", value=0.2, step = 0.01, width = NULL)
                            ),
-
+                           
                            column(6,
                                   
                                   #sliderInput("chrom.percent", "Minimum coverage for Chromosome alteration", 0, 1, value=0.9, step = 0.025, round = FALSE, sep = ",",  ticks = TRUE, animate = FALSE),
@@ -778,7 +778,7 @@ function(input, output, session) {
         
       }
       
-
+      
       
     }# else
     
@@ -1165,7 +1165,7 @@ function(input, output, session) {
       high.loss<-input$high.loss
       
       dev.btw.segs <- input$dev.btw.segs
-
+      
       
       min.baf<-input$min.baf
       #max.baf<-NA
@@ -1664,7 +1664,7 @@ function(input, output, session) {
     }
     
     
-
+    
     
     
     
@@ -1980,12 +1980,12 @@ function(input, output, session) {
         radioGroupButtons("cnfreq_options", "", choices=c("All samples"), selected="All samples")
       })
     }
-
+    
     
     sub_var_opt <- eventReactive(as.character(input$cnfreq_options), {
       cnfreq_opt <- as.character(input$cnfreq_options)
       if (cnfreq_opt == "by variable") {
-         selectInput("sub_variable_group", "", choices=colnames(mat_variables.0))
+        selectInput("sub_variable_group", "", choices=colnames(mat_variables.0))
       }
     })
     output$sub_variable <- renderUI({
@@ -2023,7 +2023,7 @@ function(input, output, session) {
       
       f_samples <- eventReactive(c(as.character(input$cnfreq_options),as.character(input$sub_variable_group), as.character(input$vars_to_plot_freq)), {
         cnfreq_opt <- as.character(input$cnfreq_options)
-
+        
         if (cnfreq_opt == "by variable") {
           variable <- as.character(input$sub_variable_group)
           terms_in_var <- input$vars_to_plot_freq
@@ -2033,7 +2033,7 @@ function(input, output, session) {
         }
         f_samples
       })
-        
+      
       w_samples <- which(names(filt_list)%in%as.character(f_samples()))
       list_segs <- filt_list[w_samples]
       
@@ -2051,45 +2051,45 @@ function(input, output, session) {
           source_fun <- paste(dir_funs, "/", my_fun, sep="")
           source(source_fun)
           # sourcing fun into R
-
+          
           fq_df2 <- disjoin.to.FQplot(list_segs, gain=low.cutoff.up, loss=low.cutoff.dw)
           rownames(fq_df2) <- paste(fq_df2$chr, ":", fq_df2$start, "-", fq_df2$end, sep="")},
-
+          
           min = 1,
           max= length(filt_list),
           value = quantile(1:length(filt_list), 0.9),
           message="Computing recurrent segments...!"
         )
-
+        
       } else { # Region profile analysis by 5Mb
         output$few_samples <- renderUI(HTML(""))
         ## Selecting segmentation file ##
-
+        
         fun_name <- "segmentation.selection" # function name
         my_fun <- paste(fun_name, ".R", sep="") # file function name
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
-
+        
         seg_name_for_fq <- "5Mb"
-
+        
         segmented_file_fq <- segmentation.selection(segmentation_name=seg_name_for_fq, genome_build)
         dimensions_seg_file <- as.character(paste(dim(segmented_file_fq)))
         seg_regions_names <- as.character(segmented_file_fq[,4])
         # apply fun to extract segmentation file('segmented_file')
-
+        
         ## Selecting segmentation file ##
         df <- do.call(rbind, list_segs)
         df <- df[,c("chr", "loc.start", "loc.end", "seg.mean", "ID")]
-
+        
         sp <- split(df, df$ID)
-
+        
         fun_name <- "scoring.segments" # function name
         my_fun <- paste(fun_name, ".R", sep="")
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun)
         # sourcing fun into R
-
-
+        
+        
         withProgress(
           ANS_result_for_fq <- mclapply(sp, scoring.segments, segmented_file=segmented_file_fq),
           min = 1,
@@ -2097,26 +2097,26 @@ function(input, output, session) {
           value = quantile(1:length(sample_names), 0.9),
           message=HTML("Too many samples... Perfoming 5Mb genome segmentation! Still working...(aprox. 4 minutes for 350 samples)")
         )
-
+        
         ####### Extracting CNA events:
         fun_name <- "classify.values" # function name
         my_fun <- paste(fun_name, ".R", sep="") # file function name
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
-
+        
         values_prova <- mclapply(ANS_result_for_fq, function(x) as.numeric(as.character(x[,4])))
-
+        
         fun.fun <- function(x){
           as.vector(as.character(lapply(x,classify.values, gain=low.cutoff.up, loss=low.cutoff.dw)))
         }
         data_for_fq <- as.data.frame(do.call(cbind, mclapply(values_prova, fun.fun)))
-
+        
         ## Statitstics CNA counts by region
         fun_name <- "fun.grep" # function name
         my_fun <- paste(fun_name, ".R", sep="") # file function name
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
-
+        
         events_order <- c("normal", "loss", "gain")
         counts_0 <- as.matrix(apply(data_for_fq, 1, fun_grep, z=events_order))
         counts_0_freq <- round((counts_0/length(list_segs) ) *100,2)
@@ -2124,31 +2124,31 @@ function(input, output, session) {
         colnames(counts)[1] <- "regions"
         counts_by_regions <- counts
         rownames(counts_by_regions) <- seg_regions_names
-
+        
         fq_df2 <- data.frame(segmented_file_fq[,1:3], counts_by_regions[,c("loss", "normal", "gain")])
       }
-
-
-
-
+      
+      
+      
+      
       ############################################
-
+      
       #Preparing 'p_cna_freq_ReSegs':
       fun_name <- "freq.barplot.GainLoss" # function name
       my_fun <- paste(fun_name, ".R", sep="")
       source_fun <- paste(dir_funs, "/", my_fun, sep="")
       source(source_fun)
       # sourcing fun into R
-
+      
       colors <- c("blue", "beige", "red")
       data <- as.data.frame(fq_df2[,c("loss", "normal", "gain")])
-          fq_df3 <- as.data.frame(cbind(rownames(data),fq_df2[,c("loss", "gain")]))
-          colnames(fq_df3)[1] <- "Region"
+      fq_df3 <- as.data.frame(cbind(rownames(data),fq_df2[,c("loss", "gain")]))
+      colnames(fq_df3)[1] <- "Region"
       seg_file <- cbind(fq_df2[,1:3],rownames(data))
-
+      
       withProgress({
         p_cna_freq_ReSegs <- freq.barplot.GainLoss(data, colors, segmented_file=seg_file, bar_gap=0)},
-
+        
         min = 1,
         max= nrow(data),
         value = quantile(1:nrow(data), 0.9),
@@ -2163,7 +2163,7 @@ function(input, output, session) {
         div(style="text-align:right",
             downloadButton("download_cnfreq_data", label="TSV"),
             downloadButton("download_cnfreq_plot", label="PNG")
-
+            
         )
       )
       
@@ -2313,7 +2313,7 @@ function(input, output, session) {
       class_var <- class(col_var)
       groups_in_var <- sort(unique(as.character(col_var)))
       if (((class_var != "numeric") | (class_var != "integer")) & score_opt == "by variable") {
-      # if ( score_opt == "by variable") {
+        # if ( score_opt == "by variable") {
         selectizeInput("vars_to_plot_scores", "", choices=groups_in_var, selected=groups_in_var, multiple=TRUE)
       } else if (score_opt == "Global") {
         HTML("")
@@ -2360,7 +2360,7 @@ function(input, output, session) {
       
       cna_scores <- c("BCS", "FCS", "GCS")
       data <- ff_box_score()
-
+      
       p_scores <- mclapply(cna_scores, score.boxplot.by.var, data=data)
       
       p_bcs <- p_scores[[1]]
@@ -2447,11 +2447,11 @@ function(input, output, session) {
     })
     
     
-   
     
     
     
-  
+    
+    
     
     
     ####Heatmap scores plot####
@@ -2595,107 +2595,120 @@ function(input, output, session) {
     ###### Survival analysis ########
     #################################
     
-    ## Variable selection (by user)
-    #if ( length(grep("surv", mat_variables.0[,1]))>0 ){
-
-      var_list <- colnames(mat_variables.0)
-      var_list_2 <- var_list[-c(which(var_list=="ID"), grep("status", var_list), grep("time", var_list) )]
-
+    var_list <- colnames(mat_variables.0)
+    
+    if ( length( grep("surv_status", var_list) ) > 0 & length( grep("surv_time", var_list) ) > 0 ){
+      
+      var_list_2 <- var_list[-c(which(var_list=="ID"), grep("surv_status", var_list), grep("surv_time", var_list) )]
+      
+      ## Variable selection (by user)
       output$prepare_surv_analysis <- renderUI({
         div(
-          HTML("<h5>Choose your variables:</h5>"),
-
+          
           fluidRow(
             column(4,
                    #variable for survival status
-                   selectizeInput("var_status", "Survival STATUS variable", choices= var_list[grep("status", var_list)], multiple=FALSE, selected= var_list[grep("status", var_list)] )
-            ),
-            column(4,
+                   selectizeInput("var_status", "Survival STATUS variable", choices= var_list[grep("surv_status", var_list)], multiple=FALSE, selected= var_list[grep("status", var_list)] ),
                    #variable for survival timing
-                   selectizeInput("var_time", "Survival TIME variable", choices= var_list[grep("time", var_list)], multiple=FALSE, selected= var_list[grep("time", var_list)] )
+                   selectizeInput("var_time", "Survival TIME variable", choices= var_list[grep("surv_time", var_list)], multiple=FALSE, selected= var_list[grep("time", var_list)] )
             ),
             column(4,
                    #variable to define sample groups in survival analysis
                    selectizeInput("var_surv_groups", "Variable to DEFINE survival groups", choices= var_list_2, multiple=FALSE )
+            ),
+            column(4
+                   
             )
           ),
-
+          
           actionBttn("button_run_surv", "Run!", style="simple", size="sm", color="primary"),
           busyIndicator(text="Running", wait=200)
         )
       })
-    #}
-
-    ## Assessing variables
-
-
-
-    ## Variable analysis
-    observeEvent(input$button_run_surv, {
-      mat_vars <- mat_variables.0
       
-      surv_var_status <- as.character(input$var_status)
-      surv_var_time <- as.character(input$var_time)
-      surv_var_groups <- as.character(input$var_surv_groups)
       
-      #col_variable <- which(colnames(mat_variables.0)==surv_var_groups)
-      if (surv_var_groups=="none") {
-        # data <- mat_vars[,c("ID", surv_var_status, surv_var_time)]
-        # colnames(data) <- c("id", "status", "time")
+      ## Assessing variables
+      
+      
+      
+      ## Variable analysis
+      observeEvent(input$button_run_surv, {
+        mat_vars <- mat_variables.0
         
+        surv_var_status <- as.character(input$var_status)
+        surv_var_time <- as.character(input$var_time)
+        surv_var_groups <- as.character(input$var_surv_groups)
         
-      } else {
-        data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
-        colnames(data) <- c("id", "status", "time", "variable")
-        
-        # colors <- c("brown", "cyan")
-        colors <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==surv_var_groups),"color_palette"])
-        
-        
-        fun_name <- "survival.plot" # function name
-        my_fun <- paste(fun_name, ".R", sep="") # file function name
-        source_fun <- paste(dir_funs, "/", my_fun, sep="")
-        source(source_fun) # sourcing fun into R
-        
-        p_survival <- survival.plot(data, colors)
-        
-        # output$message <- renderUI({
-        #   div(
-        #     HTML(colors)
-        #   )
-        # })
-        
-        output$surv_curves_plot <- renderPlot({
-          p_survival
-        })
-        
-        
-        
-        
-        output$dw_button_survival_plot <- renderUI(
-          div(style="text-align:right",
-              downloadButton("download_survival_plot", label="PNG")
-              
+        #col_variable <- which(colnames(mat_variables.0)==surv_var_groups)
+        if (surv_var_groups=="none") {
+          # data <- mat_vars[,c("ID", surv_var_status, surv_var_time)]
+          # colnames(data) <- c("id", "status", "time")
+          
+          
+        } else {
+          data <- mat_vars[,c("ID", surv_var_status, surv_var_time, surv_var_groups)]
+          colnames(data) <- c("id", "status", "time", "variable")
+          
+          # colors <- c("brown", "cyan")
+          colors <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==surv_var_groups),"color_palette"])
+          
+          
+          fun_name <- "survival.plot" # function name
+          my_fun <- paste(fun_name, ".R", sep="") # file function name
+          source_fun <- paste(dir_funs, "/", my_fun, sep="")
+          source(source_fun) # sourcing fun into R
+          
+          p_survival <- survival.plot(data, colors)
+          
+          # output$message <- renderUI({
+          #   div(
+          #     HTML(colors)
+          #   )
+          # })
+          
+          output$surv_curves_plot <- renderPlot({
+            p_survival
+          })
+          
+          
+          
+          
+          output$dw_button_survival_plot <- renderUI(
+            div(style="text-align:right",
+                downloadButton("download_survival_plot", label="PNG")
+                
+            )
           )
-        )
+          
+          
+          
+          output$download_survival_plot <- downloadHandler(
+            filename= as.character(paste("Kaplan-Meier_survival_by_", surv_var_groups, "_", Sys.time(), ".png", sep="")),
+            content=function (file){
+              
+              ggexport(p_survival, filename = file, width=1000, height=900, res=150)
+              
+            }
+          )
+          
+        }
         
         
         
-        output$download_survival_plot <- downloadHandler(
-          filename= as.character(paste("Kaplan-Meier_survival_by_", surv_var_groups, "_", Sys.time(), ".png", sep="")),
-          content=function (file){
-
-            ggexport(p_survival, filename = file, width=1000, height=900, res=150)
-            
-          }
-        )
-        
-      }
+      })
       
-    
-    
-    })
-    
+    } #if ( length(grep("surv", mat_variables.0[,1]))>0 )
+    else {
+      message <- "<i style=color:red>Annotation variables to run survival analysis <u><b>not found</b></u>.<br>
+      Survival analysis mandatory column headers are '<u>surv_status</u>' and '<u>surv_time</u>'.<br>
+      Please, re-evaluate your data annotation (see auxiliary 'Help' buttons).</i>"
+      
+      output$prepare_surv_analysis <- renderUI({
+        div(
+          HTML(message)
+        )
+      })
+    }
     
     
     
@@ -2819,7 +2832,7 @@ function(input, output, session) {
     # gain threshold value selected by user
     loss_th <- as.numeric(input$loss_th)
     # loss threshold value selected by user
-
+    
     # method_cor <- input$method_cor
     # correlation sample method in unsupervised analysis
     # (possibilities: pearson [default, kendall, spearman])
@@ -3135,7 +3148,7 @@ function(input, output, session) {
       message="Extensive region analyisis! Still working..."
     )
     
-
+    
     ## Applying segmentation assessment and CNA profile generation ##
     
     ###############Extracting 'mean.region' matrix [regions, samples]######################
@@ -3226,7 +3239,7 @@ function(input, output, session) {
         div(
           HTML(paste("<i>(", length(legend_var), " groups)</i>", sep="")),
           br(),
-        checkboxGroupInput("check_group_var", "Groups to compare", choices = legend_var, selected = legend_var)
+          checkboxGroupInput("check_group_var", "Groups to compare", choices = legend_var, selected = legend_var)
         )
       } else if (class_var=="numeric"){
         values <- round(as.numeric(as.character(mat_variables[,colnames(mat_variables)==group_variable])),3)
@@ -3234,8 +3247,8 @@ function(input, output, session) {
         div(
           HTML(paste("<i>(",length(unique(values)), " groups)</i>", sep="")),
           br(),
-        sliderInput("slider_group_var", "Groups to compare", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))),
-        sliderInput("slider_group_var_2", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))) 
+          sliderInput("slider_group_var", "Groups to compare", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))),
+          sliderInput("slider_group_var_2", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))) 
         )
       }
       
@@ -3386,7 +3399,7 @@ function(input, output, session) {
         my_fun <- paste(fun_name, ".R", sep="") # file function name
         source_fun <- paste(dir_funs, "/", my_fun, sep="")
         source(source_fun) # sourcing fun into R
-
+        
         p_cna_profile <- Ht.RegionProfile(data, mat_vars, segmented_file, variables_info_mat, track_vars, gain.cutoff, loss.cutoff)
         ############################################
         
@@ -3437,7 +3450,7 @@ function(input, output, session) {
           ####the plot####
           ## Sample cna profile DENDROGRAM ##
           
-
+          
           # output$dendro_type_box <- renderUI({
           #   div(
           #     selectizeInput("dendro_type", "Dendrogram type:", choices = c("both", "column", "row"), selected= "row", width="200px")
@@ -3460,12 +3473,12 @@ function(input, output, session) {
           loss.cutoff <- loss_th
           
           # p_dendro <<- reactive({
-            
-            dendro <- "both"
-            # dendro <- as.character(input$dendro_type)
-            
-            p_dendro <- dendro.Ht.RegionProfile(data, dendro, mat_vars, segmented_file, variables_info_mat, track_vars, gain.cutoff, loss.cutoff)
-            
+          
+          dendro <- "both"
+          # dendro <- as.character(input$dendro_type)
+          
+          p_dendro <- dendro.Ht.RegionProfile(data, dendro, mat_vars, segmented_file, variables_info_mat, track_vars, gain.cutoff, loss.cutoff)
+          
           # })
           
           output$prova_1 <- renderUI({
@@ -3557,7 +3570,7 @@ function(input, output, session) {
         })
         
         #####Unsupervised CORRELATION SAMPLES HEATMAP####
-
+        
         output$unsupervised_corr_heatmap_MAIN <- renderUI({
           HTML(paste("<br><h4><b>Samples correlation heatmap</b></h4>(samples ordered by <i><b>", order_var_name, "</b></i>)<br>(correlation method = <i><b>", re_method_cor, "</b></i>)", sep=""))
         })  
@@ -3574,15 +3587,15 @@ function(input, output, session) {
         rownames(data) <- seg_regions_names
         
         corr.method <- re_method_cor
-
+        
         p_corr_samples <- CorrSamples.Ht.RegionProfile(data, corr.method)
         ############################
-
+        
         # Merging final p_cor:
         h1 <- (0.35*length(var_tracks))/6
         h2 <- 1-h1
         seq_heights <- c(h1, h2)
-
+        
         p_corr <- subplot(p_annotation, p_corr_samples, nrows=2, shareX=T, heights=seq_heights)
         ############################
         
@@ -3657,9 +3670,9 @@ function(input, output, session) {
           track_vars <- var_tracks
           gain.cutoff <- gain_th
           loss.cutoff <- loss_th
-            
+          
           p_dendro_cor <<- dendro.Ht.CorrSamples.RegionProfile(data, corr.method, mat_vars, variables_info_mat, track_vars, gain.cutoff, loss.cutoff)
-            
+          
           
           output$cor_samples_dendrogram <- renderPlotly({
             p_dendro_cor
@@ -3706,7 +3719,7 @@ function(input, output, session) {
         
         ans_gain_byS <- extract.stats(counts_by_samples, "gain", "samples")
         ans_loss_byS <- extract.stats(counts_by_samples, "loss", "samples")
-
+        
         ## Statitstics CNA counts by region
         events_order <- c("normal", "loss", "gain")
         counts_0 <- as.matrix(apply(data.events, 1, fun_grep, z=events_order))
@@ -3808,7 +3821,7 @@ function(input, output, session) {
         
         p_bar_by_regs <- freq.barplot.GainLoss(data, colors, segmented_file)
         ############################################
-
+        
         
         output$cna_events_by_regs_MAIN <- renderUI({
           HTML(paste("<br><h4><b>CNA region frequencies</b></h4>", sep=""))
@@ -3924,7 +3937,7 @@ function(input, output, session) {
             p_events$x$layout$margin$l <- 500
             p_events$x$layout$margin$r <- 500
             export(p_events, file = file, vwidth = 7000, vheight = 5000, expand=1)
-
+            
           }
         )
         ########TSV_cna_events_barplot#####
@@ -3972,7 +3985,7 @@ function(input, output, session) {
         output$PNG_dendro_cor <- downloadHandler(
           filename = paste("Hierarchical_clust_corr_samples_", Sys.time(), ".png", sep=""),
           content = function(file) {
-
+            
             
             export(p_dendro_cor, file = file, vwidth = 1000, vheight = 750, expand=1)
           }
@@ -3991,12 +4004,12 @@ function(input, output, session) {
             loss.cutoff <- loss_th
             
             # p_dendro <<- reactive({
-              
-              dendro <- "both"
-              # dendro <- as.character(input$dendro_type)
-              
-             p_dendro <-  dendro.Ht.RegionProfile(data, dendro, mat_vars, segmented_file, variables_info_mat, track_vars, gain.cutoff, loss.cutoff, fontsize_row=10)
-              
+            
+            dendro <- "both"
+            # dendro <- as.character(input$dendro_type)
+            
+            p_dendro <-  dendro.Ht.RegionProfile(data, dendro, mat_vars, segmented_file, variables_info_mat, track_vars, gain.cutoff, loss.cutoff, fontsize_row=10)
+            
             # })
             
             export(p_dendro, file = file, vwidth = 1000, vheight = 750, expand=1)
@@ -4004,7 +4017,7 @@ function(input, output, session) {
         )
         
         
-      
+        
         
         
       } # else for (length(var_tracks)<=6)
@@ -4082,7 +4095,7 @@ function(input, output, session) {
         })
         
         output$not_differences_2 <- output$not_differences <- renderUI(div(""))
-
+        
         
         ###
         
@@ -4229,8 +4242,8 @@ function(input, output, session) {
           term
         })
         
-
-  
+        
+        
         ### T-STUDENT PART (by limma) ####
         
         groups <- paste("Group_", 1:length(real_groups), sep="")
@@ -4612,7 +4625,7 @@ function(input, output, session) {
         output$fisher_heatmap_MAIN <- renderUI({
           HTML(paste("<br><h4>More differentiated regions between groups defined by <i><b>",
                      group_variable, "</b></i>", sep=""))
-
+          
         })
         
         
@@ -4673,7 +4686,7 @@ function(input, output, session) {
           palette <- "Spectral"
           palette <- as.character(variables_info_mat[which(variables_info_mat[,"name_var"]==group_variable),"color_palette"])
           showscale <- TRUE
-
+          
           x <- paste("'", names(ans_fisher), "'", sep="")
           
           text <- t(m)
@@ -4773,7 +4786,7 @@ function(input, output, session) {
           ########################## #
           
         } # else if (length(which(apply(mat2, 2, sd)!=0))>0)  (FISHER)
-          
+        
         ############ OUTPUT Boxplot by region############
         p_boxplot <- reactive({
           region <- as.character(input$reg_selected)
@@ -4788,45 +4801,45 @@ function(input, output, session) {
           }
           
           if (length(real_groups)<=6) {
-          
-          e_list <- list()
-          for (i in 1:length(real_groups)){
-            for (j in (i:length(real_groups))[-(i:length(real_groups)==i)]){
-              contr <- c(as.character(real_groups[i]),as.character(real_groups[j]))
-              e_list <- c(e_list, list(contr))
+            
+            e_list <- list()
+            for (i in 1:length(real_groups)){
+              for (j in (i:length(real_groups))[-(i:length(real_groups)==i)]){
+                contr <- c(as.character(real_groups[i]),as.character(real_groups[j]))
+                e_list <- c(e_list, list(contr))
+              }
             }
-          }
-          
-          p_vals_here <- round(as.numeric(as.character(limma_df[which(rownames(limma_df)==as.character(region)),])),3)
-          
-          for (i in 1:length(p_vals_here)){
-            val <- as.numeric(as.character(p_vals_here[i]))
-            if (val<=0.0001){
-              val2 <- paste("****", val, sep=" ")
-            } else if (val <= 0.001){
-              val2 <- paste("***", val, sep=" ")
-            } else if (val <= 0.01){
-              val2 <- paste("**", val, sep=" ")
-            } else if (val <= 0.05){
-              val2 <- paste("*", val, sep=" ")
-            } else if (val > 0.05){
-              val2 <- paste("(ns)", val, sep=" ")
-            } else {
-              val2 <- val
+            
+            p_vals_here <- round(as.numeric(as.character(limma_df[which(rownames(limma_df)==as.character(region)),])),3)
+            
+            for (i in 1:length(p_vals_here)){
+              val <- as.numeric(as.character(p_vals_here[i]))
+              if (val<=0.0001){
+                val2 <- paste("****", val, sep=" ")
+              } else if (val <= 0.001){
+                val2 <- paste("***", val, sep=" ")
+              } else if (val <= 0.01){
+                val2 <- paste("**", val, sep=" ")
+              } else if (val <= 0.05){
+                val2 <- paste("*", val, sep=" ")
+              } else if (val > 0.05){
+                val2 <- paste("(ns)", val, sep=" ")
+              } else {
+                val2 <- val
+              }
+              p_vals_here[i] <- val2
             }
-            p_vals_here[i] <- val2
+            
+            p <- ggplot(data_3, aes(x=reorder(get(group_variable)), y=get(reg_to_plot()))) + geom_boxplot()
+            p_boxplot <- p + xlab(group_variable) + ylab(as.character(region)) + 
+              geom_signif(comparisons = e_list, map_signif_level=FALSE, step_increase=0.08 , annotation=p_vals_here) +
+              theme(text = element_text(size=14), axis.text.x = element_text(size=12), plot.margin = unit(c(1,1,1,1), "cm"))
+            
+          } else if (length(real_groups)>6) {
+            p <- ggplot(data_3, aes(x=reorder(get(group_variable)), y=get(reg_to_plot()))) + geom_boxplot()
+            p_boxplot <- p + xlab(group_variable) + ylab(as.character(region)) + 
+              theme(text = element_text(size=14), axis.text.x = element_text(size=12), plot.margin = unit(c(1,1,1,1), "cm"))
           }
-          
-          p <- ggplot(data_3, aes(x=reorder(get(group_variable)), y=get(reg_to_plot()))) + geom_boxplot()
-          p_boxplot <- p + xlab(group_variable) + ylab(as.character(region)) + 
-            geom_signif(comparisons = e_list, map_signif_level=FALSE, step_increase=0.08 , annotation=p_vals_here) +
-            theme(text = element_text(size=14), axis.text.x = element_text(size=12), plot.margin = unit(c(1,1,1,1), "cm"))
-          
-        } else if (length(real_groups)>6) {
-          p <- ggplot(data_3, aes(x=reorder(get(group_variable)), y=get(reg_to_plot()))) + geom_boxplot()
-          p_boxplot <- p + xlab(group_variable) + ylab(as.character(region)) + 
-            theme(text = element_text(size=14), axis.text.x = element_text(size=12), plot.margin = unit(c(1,1,1,1), "cm"))
-        }
           
           return(p_boxplot)
           
@@ -4870,7 +4883,7 @@ function(input, output, session) {
           rownames(mt) <- real_groups
           
           mt$real_groups <- factor(mt$real_groups, levels = c(as.character(mt$real_groups)))
-
+          
           
           colors <- c("red", "blue", "gainsboro")
           #par(xpd=T, mar=c(1,3,1,5))
@@ -5099,7 +5112,7 @@ function(input, output, session) {
             p_stacked$x$layout$margin$l <- 1000
             p_stacked$x$layout$margin$r <- 700
             export(p_stacked,file = file, vwidth = 1200, vheight = 700, expand=1)
-
+            
             
           }
         )
@@ -5157,14 +5170,14 @@ function(input, output, session) {
           }
         )
         
-        }#else if (n_groups > 1)
-        
-        
-        
-        
-        
-        
-      })#observeEvent (button_run_limma)
+      }#else if (n_groups > 1)
+      
+      
+      
+      
+      
+      
+    })#observeEvent (button_run_limma)
     
     
     
@@ -5206,7 +5219,7 @@ function(input, output, session) {
       )
     })
     
-    })#observeEvent (button_run)
+  })#observeEvent (button_run)
   
   
   ############################
@@ -5303,15 +5316,15 @@ function(input, output, session) {
           
         } else if (length(grep(groups_by_var, vars_cin))>0  ) {
           where <- "cin"
-            values <- round(as.numeric(as.character(all_cin_part$scores[,colnames(all_cin_part$scores)==groups_by_var])),3)
-            div(
-              HTML(paste("<i>",length(unique(values)), " groups defined:</i>", sep="")),
-              sliderInput("slider_group_var_model", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))),
-              sliderInput("slider_group_var_model_2", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))) 
-            )
+          values <- round(as.numeric(as.character(all_cin_part$scores[,colnames(all_cin_part$scores)==groups_by_var])),3)
+          div(
+            HTML(paste("<i>",length(unique(values)), " groups defined:</i>", sep="")),
+            sliderInput("slider_group_var_model", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))),
+            sliderInput("slider_group_var_model_2", "", min=min(values, na.rm = T), max=max(values, na.rm = T), value = c(min(values, na.rm = T),max(values, na.rm = T))) 
+          )
           
         }
-
+        
         
       })
       
@@ -5500,12 +5513,12 @@ function(input, output, session) {
         to_classify_var <- input$var_to_classify
         
         if (length( grep("Specific region/s", to_classify_var) ) ==1 ) {
-
+          
           selectizeInput("spec_regions", "Select specific regions:", choices=as.character(all_profile_part[["segmented_file"]][,4]), selected=as.character(all_profile_part[["segmented_file"]][1:3,4]), multiple=TRUE, options = list(maxOptions=3000))
         } else {
-
-                     HTML("")
-
+          
+          HTML("")
+          
         }
         
       })
@@ -5517,13 +5530,13 @@ function(input, output, session) {
                  subs_variable_group(),
                  div(style="text-align:left",actionBttn("button_create_model", "Create new model", style="fill", size="md", color="warning")),
                  busyIndicator(text="Running", wait=200)
-                 ),
+          ),
           column(6,
                  spec_out()
-                 )
+          )
         )
-
-        })
+        
+      })
       
       
       
@@ -5545,7 +5558,7 @@ function(input, output, session) {
             column(6,
                    #variable to define sample groups in model
                    selectizeInput("var_def_groups", "Variable to DEFINE groups", choices= sel_list_1, multiple=FALSE, options = list(maxOptions=3000))
-
+                   
             ),
             column(6,
                    #variable (or variables...) to classify sample groups defined by 'var_def_groups'
@@ -5626,7 +5639,7 @@ function(input, output, session) {
         HTML("<i style=color:red> Variable 'to CLASSIFY' can not be the same one as 'to DEFINE'!</i>")
       })
     } else {
-
+      
       
       #####
       ##### CLASSIFICATORY VARS
@@ -5788,9 +5801,9 @@ function(input, output, session) {
         
         
         
-
-          # if ( (s.part.pro < (length(samples_in_groups) * 0.001)) |  ((length(samples_in_groups) * 0.001) < 1) ) {
-          if ( (s.part.pro <= 1) |  (length(samples_in_groups) < 20) ) {
+        
+        # if ( (s.part.pro < (length(samples_in_groups) * 0.001)) |  ((length(samples_in_groups) * 0.001) < 1) ) {
+        if ( (s.part.pro <= 1) |  (length(samples_in_groups) < 20) ) {
           
           output$error_model <- renderUI({
             HTML("<i style=color:red>Can't perform model!! N samples between groups have to be comparable. (Try other variables)</i>")
@@ -6181,15 +6194,15 @@ function(input, output, session) {
           )
           
           #########################################
-      }
+        }
+        
+      } #else (CAN PERFORM MODEL!)
       
-    } #else (CAN PERFORM MODEL!)
-    
-
-
-
-
-
+      
+      
+      
+      
+      
     } # else of (input$var_to_classify == input$var_def_groups)
     
   }) #observeEvent(input$button_create_model)
@@ -6230,5 +6243,5 @@ function(input, output, session) {
   
   
   
-  } #function (input,output)
-  
+} #function (input,output)
+

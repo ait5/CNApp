@@ -386,6 +386,9 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                                    
                                    br(),
                                    HTML("<h4><b>Survival analysis</b> <i>(by annotation variables)</i></h4>"),
+                                   br(),
+                                   HTML("<h5>Choose your variables:</h5>"),
+                                   br(),
                                    
                                    div(style="text-align:center", uiOutput("prepare_surv_analysis")),
                                   
