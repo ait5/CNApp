@@ -1,6 +1,6 @@
 
 
-genome_build <- "hg38"
+genome_build <- "hg19"
 
 NAME <- paste("UCSC_cytoBand_", genome_build, ".txt", sep="")
 
@@ -19,7 +19,7 @@ sub_cytos_2 <- sub_cytos[order_by_chrom,]
 
 
 ## Minor cytobands (sub_cytobands)
-cyto_name <- "minor_cytobands"
+cyto_name <- "sub-cytobands"
 data <- sub_cytos_2[,1:4]
 	data[,4] <- paste(data[,1], data[,4], sep="_") 
 
@@ -29,7 +29,7 @@ write.table(data, NAME, sep="\t", col.names=F, row.names=F, quote=F)
 
 
 ## Major cytobands 
-cyto_name <- "major_cytobands"
+cyto_name <- "cytobands"
 
 data <- sub_cytos_2[,1:4]
 rownames(data) <- 1:nrow(data)
