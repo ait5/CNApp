@@ -6129,7 +6129,7 @@ function(input, output, session) {
             
             
             first_pred <- sort(freq_mat[ii,2:(2+n.groups-1)], decreasing=T)[1]
-            if (first_pred>=confidence_th & freq_mat[ii, "prediction"]=="good"){
+            if (first_pred>=confidence_th){
               freq_mat[ii,grep("confidence", colnames(freq_mat))] <- "high"
             } else {
               freq_mat[ii,grep("confidence", colnames(freq_mat))] <- "low"
