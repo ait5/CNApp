@@ -117,7 +117,7 @@ for (i in 1:dim(data)[1]){
 	x.chrom <- as.character(row[1,1])
 
 
-	row.1.1 <- c(as.character(row[1,1]), row[1,2], round((row[1,3]/2),1))
+	row.1.1 <- c(as.character(row[1,1]), row[1,2], round( row[1,2]+( (row[1,3]-row[1,2])/2 ) ,0) ) 
 	row.1.2 <- c(as.character(row[1,1]), row.1.1[3], row[1,3])
 	e_list[[i]] <- rbind(row.1.1, row.1.2)
 	
