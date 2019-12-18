@@ -51,8 +51,8 @@ for (i in 1:length(m_bands)){
 	band <- m_bands[i]
 	mat_band <- data[which(data[,5]==band),]
 	CHROM <- as.character(unique(mat_band[,1]))
-	START <- mat_band[1,2]
-	END <- mat_band[nrow(mat_band),3]
+	START <- round(mat_band[1,2],0)
+	END <- round(mat_band[nrow(mat_band),3],0)
 	new_row <- c(CHROM, START, END, band)
 	new_data[i,] <-	new_row
 }
@@ -83,8 +83,8 @@ for (i in 1:length(seq_chroms)){
 		arm <- seq_arms[j]
 		arm_rows <- grep(arm, mat_chrom[,4])
 		mat_chrom_arm <- mat_chrom[arm_rows,]
-		START <- mat_chrom_arm[1,2]
-		END <- mat_chrom_arm[nrow(mat_chrom_arm),3]
+		START <- round(mat_chrom_arm[1,2],0)
+		END <- round(mat_chrom_arm[nrow(mat_chrom_arm),3],0)
 		new_row <- c(chrom, START, END, arm)
 		
 		e_list[[paste(chrom, arm, sep="_")]] <- new_row
@@ -123,10 +123,11 @@ for (i in 1:dim(data)[1]){
 	
 }
 new_data <- as.data.frame(do.call(rbind, e_list))
+new_data[,2] <- round(as.numeric(as.character(new_data[,2])),0)
+new_data[,3] <- round(as.numeric(as.character(new_data[,3])),0)
 	new_data[,4] <- paste(1:dim(new_data)[1], "|", new_data[,1], ":", new_data[,2], "-", new_data[,3], sep="")
 
-new_data[,2] <- as.numeric(as.character(new_data[,2]))
-new_data[,3] <- as.numeric(as.character(new_data[,3]))
+
 rownames(new_data) <- 1:nrow(new_data)
 
 half_arms_data <- new_data
@@ -184,10 +185,12 @@ for (xx in 1:length(seq_bys_num)){
 	l.ANS <- apply(df, 1, function(x) FUN(x, BY=BY))
 
 	new_data <- do.call(rbind, l.ANS)
+
+	new_data[,2] <- round(as.numeric(as.character(new_data[,2])),0)
+	new_data[,3] <- round(as.numeric(as.character(new_data[,3])),0)
 	new_data[,4] <- paste(1:dim(new_data)[1], "|", new_data[,1], ":", new_data[,2], "-", new_data[,3], sep="")
 
-	new_data[,2] <- as.numeric(as.character(new_data[,2]))
-	new_data[,3] <- as.numeric(as.character(new_data[,3]))
+
 	rownames(new_data) <- 1:nrow(new_data)
 
 	data <- new_data
