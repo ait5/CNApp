@@ -1956,10 +1956,27 @@ function(input, output, session) {
     for (i in 2:length(names(filt_list))) {
       all.in.one[1:nrow(filt_list[[i]])+nrow(all.in.one),]<-filt_list[[i]]
     }
-    df_ReSeg <- all.in.one[,c("ID", "chr", "loc.start", "loc.end", "seg.mean", "length", "BAF", "classified", "type")]
-    if ( length(unique(df_ReSeg$BAF))==1 & unique(df_ReSeg$BAF)==0.5){
-      df_ReSeg <- df_ReSeg[,c("ID", "chr", "loc.start", "loc.end", "seg.mean", "length", "classified", "type")] # prensenting no BAF
+    df_ReSeg0 <- all.in.one[,c("ID", "chr", "loc.start", "loc.end", "seg.mean", "length", "BAF", "classified", "type")]
+    if ( length(unique(df_ReSeg0$BAF))==1 & unique(df_ReSeg0$BAF)==0.5){
+      df_ReSeg0 <- df_ReSeg0[,c("ID", "chr", "loc.start", "loc.end", "seg.mean", "length", "classified", "type")] # prensenting no BAF
     }
+
+    df_ReSeg_by_patient <- split(df_ReSeg0, df_ReSeg0$ID)
+    names(df_ReSeg_by_patient) <- unique(df_ReSeg0$ID)
+    
+    df_ReSeg <- as.data.frame(do.call(rbind, lapply(names(df_ReSeg_by_patient), function(x){
+      name <- x
+      pp <- df_ReSeg_by_patient[[name]]
+      row_in_vars <- mat_variables.0[which(mat_variables.0$ID==name),-which(colnames(mat_variables.0)=='ID')]
+      
+      new_mat <- as.data.frame(matrix(NA, nrow=nrow(pp), ncol=length(row_in_vars)))
+      colnames(new_mat) <- names(row_in_vars)
+      for (i in 1:nrow(new_mat)){
+        new_mat[i,] <- row_in_vars
+      }
+      pp2 <- cbind(pp, new_mat)
+      pp2
+    })))
     ######################################
     
     output$ann_segments_all <- downloadHandler(filename = function(){paste("Re-segmented_samples_CNApp_", Sys.time(), ".tsv", sep="")}, 
