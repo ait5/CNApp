@@ -25,8 +25,8 @@ if(!require(shinyjs)) install.packages("shinyjs")
 if(!require(shinythemes)) install.packages("shinythemes")
 if(!require(shinyWidgets)) install.packages("shinyWidgets")
 if(!require(shinydashboard)) install.packages("shinydashboard")
-if(!require(shinydashboard)) install.packages("survival")
-if(!require(shinydashboard)) install.packages("survminer")
+if(!require(survival)) install.packages("survival")
+if(!require(survminer)) install.packages("survminer")
 
 if(!require(V8)) install.packages("V8")
 #if any issue here like 'ERROR: configuration failed for package ‘curl’' or 'ERROR: configuration failed for package ‘V8’' follow printed instructions on your command-line window
