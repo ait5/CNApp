@@ -31,6 +31,7 @@ library(caret)
 library(survival)
 library(survminer)
 library(Cairo)
+library(DT)
 
 function(input, output, session) {
   includeScript("www/ITEMS/js/CNApp-analytics.js")
