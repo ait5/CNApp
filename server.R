@@ -30,7 +30,7 @@ library(parallel)
 library(caret)
 library(survival)
 library(survminer)
-
+library(Cairo)
 
 function(input, output, session) {
   includeScript("www/ITEMS/js/CNApp-analytics.js")
