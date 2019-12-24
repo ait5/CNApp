@@ -50,7 +50,7 @@ dashboardPage(title="CNApp - Copy Number Alterations Integrative Analysis",
                   ),
                   
                   dropdownMenu(type="messages", icon=icon("info-circle"), headerText = "", badgeStatus = NULL,
-                               messageItem(icon=icon("info-circle"), href="https://tools.idibaps.org/CNApp/home.html#about",
+                               messageItem(icon=icon("info-circle"), href="https://tools.idibaps.org/CNApp/#about",
                                            from= tags$div(tags$h4("About CNApp")),
                                            message=HTML("")
                                )
