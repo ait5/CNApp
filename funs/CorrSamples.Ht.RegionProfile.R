@@ -8,6 +8,7 @@ CorrSamples.Ht.RegionProfile <- function (data, corr.method) {
 
   # Preparing corr samples 'cor_samples':
   cor_samples <- cor(mat, method=corr.method) # 'method_cor' is selected by user (pearson, kendall, spearman)
+  colnames(cor_samples) <- paste(" -", colnames(cor_samples), "- ", sep="")
   cor_samples_mat <- round(cor_samples, 3) # sample correlations matrix
   #########################
 

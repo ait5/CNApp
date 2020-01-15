@@ -7,6 +7,7 @@ freq.barplot <- function(data, colors){
   # - 'colors' is a vector with many colors as columns there are
 
   mt <- data
+  rownames(mt) <- paste(" -", rownames(mt), "- ", sep="")
 
   x <- as.character(rownames(mt))
   max_term <- max(apply(data, 1, function(x){ sum(as.numeric(as.character(x))) }))
